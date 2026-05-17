@@ -11,8 +11,8 @@
     top: 0;
     width: 250px;
     height: 100vh;
-    background: linear-gradient(180deg, #0f3f3b 0%, #123c4a 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(180deg, darkslategray 0%, teal 100%);
+    border-right: 1px solid color-mix(in srgb, white 12%, transparent);
     box-shadow: var(--shadow);
     z-index: 100;
     overflow-y: auto;
@@ -24,7 +24,7 @@
 }
 
 .admin-header {
-    background: rgba(251, 254, 253, 0.92);
+    background: color-mix(in srgb, mintcream 92%, transparent);
     border-bottom: 1px solid var(--border-color);
     padding: 1rem 2rem;
     box-shadow: var(--shadow);
@@ -49,13 +49,13 @@
 /* Sidebar */
 .sidebar-header {
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid color-mix(in srgb, white 12%, transparent);
 }
 
 .sidebar-logo {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #ecfeff;
+    color: azure;
 }
 
 .sidebar-nav {
@@ -70,7 +70,7 @@
     padding: 0 1.5rem;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #9ed9d1;
+    color: powderblue;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
@@ -80,7 +80,7 @@
     display: flex;
     align-items: center;
     padding: 0.75rem 1.5rem;
-    color: #d8f3ee;
+    color: lightcyan;
     text-decoration: none;
     transition: all 0.2s;
     border-left: 3px solid transparent;
@@ -88,8 +88,8 @@
 
 .nav-item:hover,
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
+    background: color-mix(in srgb, white 12%, transparent);
+    color: white;
     border-left-color: var(--accent-color);
 }
 
@@ -107,14 +107,14 @@
 }
 
 .overview-card {
-    background: linear-gradient(180deg, #ffffff 0%, #eefaf7 100%);
+    background: linear-gradient(180deg, white 0%, mintcream 100%);
     border-radius: 0.75rem;
     padding: 1.5rem;
     box-shadow: var(--shadow);
     border-left: 4px solid var(--primary-color);
-    border-top: 1px solid #dcebea;
-    border-right: 1px solid #dcebea;
-    border-bottom: 1px solid #dcebea;
+    border-top: 1px solid azure;
+    border-right: 1px solid azure;
+    border-bottom: 1px solid azure;
 }
 
 .overview-card.success {
@@ -193,7 +193,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(180deg, #fbfefd 0%, #edf8f6 100%);
+    background: linear-gradient(180deg, mintcream 0%, azure 100%);
 }
 
 .data-table-title {
@@ -214,7 +214,7 @@
 }
 
 .data-table th {
-    background: #dff1ee;
+    background: azure;
     padding: 1rem;
     text-align: left;
     font-weight: 600;
@@ -233,7 +233,7 @@
 }
 
 .data-table tbody tr:hover {
-    background: #f0fdfa;
+    background: mintcream;
 }
 
 .data-table tbody tr:last-child td {
@@ -395,7 +395,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: lightgray;
     transition: 0.4s;
     border-radius: 24px;
 }
@@ -465,7 +465,7 @@ input:checked + .toggle-slider:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: color-mix(in srgb, black 50%, transparent);
     z-index: 99;
 }
 
@@ -602,33 +602,33 @@ input:checked + .toggle-slider:before {
 }
 
 .badge-waiting {
-    background: #fef3c7;
-    color: #92400e;
+    background: lemonchiffon;
+    color: saddlebrown;
 }
 
 .badge-called {
-    background: #dbeafe;
-    color: #1e40af;
+    background: aliceblue;
+    color: royalblue;
 }
 
 .badge-serving {
-    background: #d1fae5;
-    color: #065f46;
+    background: honeydew;
+    color: seagreen;
 }
 
 .badge-completed {
-    background: #dcfce7;
-    color: #166534;
+    background: honeydew;
+    color: forestgreen;
 }
 
 .badge-no-show {
-    background: #fee2e2;
-    color: #991b1b;
+    background: mistyrose;
+    color: firebrick;
 }
 
 .badge-cancelled {
-    background: #f3f4f6;
-    color: #4b5563;
+    background: ghostwhite;
+    color: dimgray;
 }
 
 .badge-primary {

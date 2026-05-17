@@ -17,9 +17,16 @@ class AdminDashboard {
         // Check if user is logged in as admin
         const savedUser = utils.session.get('admin_user');
         if (savedUser && savedUser.role_name === 'admin') {
-            this.currentUser = savedUser;
-            this.showAdminInterface();
-            await this.loadDashboard();
+            const sessionUser = await this.getCurrentAdminSession();
+            if (sessionUser) {
+                this.currentUser = sessionUser;
+                utils.session.set('admin_user', this.currentUser);
+                this.hideLoginModal();
+                this.showAdminInterface();
+                await this.loadDashboard();
+            } else {
+                this.handleAuthExpired('Please log in again to continue.');
+            }
         } else {
             this.redirectToLogin();
         }
@@ -43,16 +50,31 @@ class AdminDashboard {
         modal.classList.remove('show');
     }
 
+    async getCurrentAdminSession() {
+        try {
+            const response = await api.request('/api/session');
+            if (response.success && response.user.role_name === 'admin') {
+                return response.user;
+            }
+        } catch (error) {
+            if (error.status !== 401) {
+                console.error('Failed to verify admin session:', error);
+            }
+        }
+
+        return null;
+    }
+
     showAdminInterface() {
         document.getElementById('admin-sidebar').style.display = 'block';
         document.getElementById('admin-main').style.display = 'block';
     }
 
-    handleAuthExpired() {
+    handleAuthExpired(message = 'Your admin session expired. Please log in again.') {
         utils.session.remove('admin_user');
         this.currentUser = null;
         this.showLoginModal();
-        utils.showError('Your admin session expired. Please log in again.');
+        utils.showError(message);
     }
 
     async login(username, password) {
@@ -323,7 +345,14 @@ class AdminDashboard {
         this.currentSection = sectionName;
 
         // Load section-specific data
-        this.loadSectionData(sectionName);
+        this.loadSectionData(sectionName).catch(error => {
+            console.error(`Failed to load ${sectionName} section:`, error);
+            if (error.status === 401) {
+                this.handleAuthExpired();
+            } else {
+                utils.showError(`Failed to load ${titles[sectionName] || 'section'} data.`);
+            }
+        });
     }
 
     async loadSectionData(sectionName) {

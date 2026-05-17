@@ -226,16 +226,36 @@ app.post('/api/login', (req, res) => {
         }
         
         req.session.user = user;
-        res.json({ 
-            success: true, 
-            user: { 
-                username: user.username, 
-                role_name: user.role_name,
-                counter_id: user.counter_id,
-                counter_name: user.counter_name,
-                service_id: user.service_id
-            } 
+        req.session.save((saveErr) => {
+            if (saveErr) {
+                return res.status(500).json({ error: 'Failed to save session' });
+            }
+
+            res.json({
+                success: true,
+                user: {
+                    username: user.username,
+                    role_name: user.role_name,
+                    counter_id: user.counter_id,
+                    counter_name: user.counter_name,
+                    service_id: user.service_id
+                }
+            });
         });
+    });
+});
+
+app.get('/api/session', requireAuth, (req, res) => {
+    const user = req.session.user;
+    res.json({
+        success: true,
+        user: {
+            username: user.username,
+            role_name: user.role_name,
+            counter_id: user.counter_id,
+            counter_name: user.counter_name,
+            service_id: user.service_id
+        }
     });
 });
 
