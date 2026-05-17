@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQueue - Staff Dashboard</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/staff.css">
+</head>
+<body>
+    <div class="staff-container" id="staff-container" style="display: none;">
+        <!-- Header -->
+        <div class="staff-header">
+            <div class="container">
+                <div class="staff-header-content">
+                    <div class="staff-info">
+                        <div class="logo">SmartQueue Staff</div>
+                        <div class="counter-badge" id="counter-info">Counter 1</div>
+                        <div class="status-indicator">
+                            <div class="status-dot online"></div>
+                            <span>Online</span>
+                        </div>
+                    </div>
+                    <div class="staff-actions">
+                        <button id="refresh-btn" class="btn btn-secondary">Refresh</button>
+                        <button id="logout-btn" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="staff-main">
+            <div class="container">
+                <!-- Current Ticket & Queue Grid -->
+                <div class="staff-grid">
+                    <!-- Current Ticket Section -->
+                    <div class="current-ticket">
+                        <h2>
+                            🎫 Current Ticket
+                        </h2>
+                        
+                        <div id="current-ticket-content">
+                            <div class="no-ticket">
+                                <div class="no-ticket-icon">📋</div>
+                                <p>No active ticket</p>
+                                <button id="call-next-btn" class="btn btn-primary btn-lg">
+                                    Call Next Customer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Queue Section -->
+                    <div class="queue-section">
+                        <div class="queue-header">
+                            <h2>📋 Queue Status</h2>
+                            <div class="queue-stats">
+                                <div class="queue-stat">
+                                    <div class="queue-stat-number" id="waiting-count">0</div>
+                                    <div class="queue-stat-label">Waiting to Call</div>
+                                </div>
+                                <div class="queue-stat">
+                                    <div class="queue-stat-number" id="served-today">0</div>
+                                    <div class="queue-stat-label">Served Today</div>
+                                </div>
+                                <div class="queue-stat">
+                                    <div class="queue-stat-number" id="avg-wait-time">0</div>
+                                    <div class="queue-stat-label">Avg Wait (min)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="queue-list" id="queue-list">
+                            <!-- Queue items will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <a href="#" class="quick-action-btn" id="view-history">
+                            <div class="quick-action-icon">📊</div>
+                            <span>View History</span>
+                        </a>
+                        <a href="#" class="quick-action-btn" id="break-mode">
+                            <div class="quick-action-icon">⏸️</div>
+                            <span>Take Break</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="performance-section">
+                    <h2>📈 Today's Performance</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="tickets-served">0</div>
+                            <div class="metric-label">Tickets Served</div>
+                            <div class="metric-change" id="tickets-served-change"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="avg-service-time">0</div>
+                            <div class="metric-label">Avg Service Time (min)</div>
+                            <div class="metric-change" id="avg-service-time-change"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="no-show-count">0</div>
+                            <div class="metric-label">No-Show Count</div>
+                            <div class="metric-change" id="no-show-change"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="total-wait-time">0</div>
+                            <div class="metric-label">Total Wait Time (min)</div>
+                            <div class="metric-change" id="total-wait-time-change"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Staff Login</h2>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel"></div>
+
+    <script src="js/common.js"></script>
+    <script src="js/staff.js"></script>
+
+    <style>
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+    </style>
+</body>
+</html>

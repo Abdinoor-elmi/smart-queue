@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQueue - Customer Kiosk</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/kiosk.css">
+</head>
+<body>
+    <div class="kiosk-container">
+        <div class="kiosk-header">
+            <h1 class="kiosk-title">SmartQueue</h1>
+            <p class="kiosk-subtitle">Digital Queue Management System</p>
+        </div>
+
+        <div class="kiosk-content">
+            <!-- Service Selection Screen -->
+            <div id="service-selection" class="service-selection">
+                <h2>Select Your Service</h2>
+                <div id="service-grid" class="service-grid">
+                    <!-- Services will be loaded dynamically -->
+                </div>
+                <div class="kiosk-actions">
+                    <button id="get-ticket-btn" class="btn btn-primary kiosk-btn" disabled>
+                        Get Ticket
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ticket Display Screen -->
+            <div id="ticket-display" class="ticket-display hidden">
+                <div class="ticket-number" id="ticket-number">A001</div>
+                
+                <div class="ticket-info">
+                    <h3>Your Ticket Details</h3>
+                    <div class="ticket-details">
+                        <div class="ticket-detail">
+                            <div class="ticket-detail-label">Service</div>
+                            <div class="ticket-detail-value" id="ticket-service">General Service</div>
+                        </div>
+                        <div class="ticket-detail">
+                            <div class="ticket-detail-label">Proceed to</div>
+                            <div class="ticket-detail-value" id="ticket-counter">-</div>
+                        </div>
+                        <div class="ticket-detail">
+                            <div class="ticket-detail-label">Position in Queue</div>
+                            <div class="ticket-detail-value" id="ticket-position">5</div>
+                        </div>
+                        <div class="ticket-detail">
+                            <div class="ticket-detail-label">Status</div>
+                            <div class="ticket-status waiting" id="ticket-status">Waiting to be called</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="queue-status">
+                    <h4>Estimated Wait Time</h4>
+                    <div class="estimated-wait" id="estimated-wait">15 minutes</div>
+                </div>
+
+                <div class="status-message-box" style="margin: 1.5rem 0; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 8px; text-align: center;">
+                    <p id="status-message" style="margin: 0; font-size: 1.125rem;">Please wait for your turn. You will be called soon.</p>
+                </div>
+
+                <div class="print-instructions">
+                    <p>📱 Keep this screen open to see your status updates in real-time.</p>
+                </div>
+
+                <div class="ticket-share-panel">
+                    <div class="ticket-share-label">Ticket link</div>
+                    <img id="ticket-qr-code" class="ticket-qr-code" alt="Ticket QR code">
+                    <div class="ticket-share-row">
+                        <input id="ticket-share-link" class="form-control" type="text" readonly>
+                        <button id="copy-ticket-link-btn" class="btn btn-secondary" type="button">Copy</button>
+                    </div>
+                </div>
+
+                <div class="kiosk-actions">
+                    <button id="print-ticket-btn" class="btn btn-secondary kiosk-btn" type="button">
+                        Print Ticket
+                    </button>
+                    <button id="cancel-ticket-btn" class="btn btn-danger kiosk-btn">
+                        Cancel Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your request...</p>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div id="error-alert" class="alert alert-error hidden" style="position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 1001; max-width: 400px;">
+        <span id="error-message">An error occurred</span>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/kiosk.js"></script>
+</body>
+</html>

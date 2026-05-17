@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQueue - Staff History</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/staff.css">
+</head>
+<body>
+    <div class="staff-container">
+        <!-- Header -->
+        <div class="staff-header">
+            <div class="container">
+                <div class="staff-header-content">
+                    <div class="staff-info">
+                        <div class="logo">SmartQueue Staff - History</div>
+                    </div>
+                    <div class="staff-actions">
+                        <button onclick="window.location.href='/staff'" class="btn btn-secondary">Back to Dashboard</button>
+                        <button id="logout-btn" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="staff-main">
+            <div class="container">
+                <!-- Filters -->
+                <div class="form-container" style="margin-bottom: 2rem;">
+                    <div class="form-header">
+                        <div class="form-title">Filter History</div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="filter-status">
+                                <option value="all">All</option>
+                                <option value="completed">Completed</option>
+                                <option value="no-show">No-Show</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" id="filter-date">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Service</label>
+                            <select class="form-control" id="filter-service">
+                                <option value="all">All Services</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-primary" id="apply-filter-btn" style="width: 100%;">Apply Filter</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="data-table-container">
+                    <div class="data-table-header">
+                        <div class="data-table-title">Ticket History</div>
+                        <div class="data-table-actions">
+                            <button class="btn btn-secondary" id="export-btn">Export CSV</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket #</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Completed</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Loading history...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="dashboard-overview" style="margin-top: 2rem;">
+                    <div class="overview-card">
+                        <div class="overview-header">
+                            <div class="overview-title">Total Tickets</div>
+                            <div class="overview-icon">🎫</div>
+                        </div>
+                        <div class="overview-value" id="stat-total">0</div>
+                    </div>
+                    
+                    <div class="overview-card success">
+                        <div class="overview-header">
+                            <div class="overview-title">Completed</div>
+                            <div class="overview-icon">✅</div>
+                        </div>
+                        <div class="overview-value" id="stat-completed">0</div>
+                    </div>
+                    
+                    <div class="overview-card danger">
+                        <div class="overview-header">
+                            <div class="overview-title">No-Shows</div>
+                            <div class="overview-icon">❌</div>
+                        </div>
+                        <div class="overview-value" id="stat-noshow">0</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-header">
+                            <div class="overview-title">Cancelled</div>
+                            <div class="overview-icon">-</div>
+                        </div>
+                        <div class="overview-value" id="stat-cancelled">0</div>
+                    </div>
+                    
+                    <div class="overview-card warning">
+                        <div class="overview-header">
+                            <div class="overview-title">Avg Duration</div>
+                            <div class="overview-icon">⏱️</div>
+                        </div>
+                        <div class="overview-value" id="stat-avg-duration">0 min</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/staff-history.js"></script>
+</body>
+</html>

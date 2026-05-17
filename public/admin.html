@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQueue - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="admin-sidebar" style="display: none;">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">SmartQueue Admin</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                        <span class="nav-item-icon">📊</span>
+                        Dashboard
+                    </a>
+                    <a href="#queue" class="nav-item" data-section="queue">
+                        <span class="nav-item-icon">📋</span>
+                        Queue Management
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Configuration</div>
+                    <a href="#services" class="nav-item" data-section="services">
+                        <span class="nav-item-icon">🏢</span>
+                        Services
+                    </a>
+                    <a href="#counters" class="nav-item" data-section="counters">
+                        <span class="nav-item-icon">🏪</span>
+                        Counters
+                    </a>
+                    <a href="#users" class="nav-item" data-section="users">
+                        <span class="nav-item-icon">👥</span>
+                        Users
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Reports</div>
+                    <a href="#analytics" class="nav-item" data-section="analytics">
+                        <span class="nav-item-icon">📈</span>
+                        Analytics
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#settings" class="nav-item" data-section="settings">
+                        <span class="nav-item-icon">⚙️</span>
+                        Settings
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main" id="admin-main" style="display: none;">
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="admin-header-content">
+                    <button class="mobile-sidebar-toggle" id="sidebar-toggle">☰</button>
+                    <h1 id="page-title">Dashboard</h1>
+                    <div class="admin-actions">
+                        <span id="admin-user">Admin User</span>
+                        <button id="logout-btn" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <div class="dashboard-overview">
+                        <div class="overview-card">
+                            <div class="overview-header">
+                                <div class="overview-title">Total Tickets Today</div>
+                                <div class="overview-icon">🎫</div>
+                            </div>
+                            <div class="overview-value" id="total-tickets">0</div>
+                        </div>
+                        
+                        <div class="overview-card success">
+                            <div class="overview-header">
+                                <div class="overview-title">Tickets Served</div>
+                                <div class="overview-icon">✅</div>
+                            </div>
+                            <div class="overview-value" id="served-tickets">0</div>
+                        </div>
+                        
+                        <div class="overview-card warning">
+                            <div class="overview-header">
+                                <div class="overview-title">Average Wait Time</div>
+                                <div class="overview-icon">⏱️</div>
+                            </div>
+                            <div class="overview-value" id="avg-wait">0 min</div>
+                        </div>
+                        
+                        <div class="overview-card danger">
+                            <div class="overview-header">
+                                <div class="overview-title">Active Counters</div>
+                                <div class="overview-icon">🏪</div>
+                            </div>
+                            <div class="overview-value" id="active-counters">0</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Queue Activity</div>
+                            <div class="chart-filters">
+                                <select class="form-control" id="activity-period-filter">
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-content" id="queue-activity-chart">
+                            <p style="text-align: center; padding: 2rem;">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Queue Management Section -->
+                <div id="queue-section" class="content-section hidden">
+                    <div class="data-table-container">
+                        <div class="data-table-header">
+                            <div class="data-table-title">Current Queue Status</div>
+                            <div class="data-table-actions">
+                                <button class="btn btn-primary">Refresh</button>
+                                <button class="btn btn-secondary">Export</button>
+                            </div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket #</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Wait Time</th>
+                                    <th>Counter</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-table-body">
+                                <!-- Queue data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Services Section -->
+                <div id="services-section" class="content-section hidden">
+                    <div class="form-container">
+                        <div class="form-header">
+                            <div class="form-title">Manage Services</div>
+                        </div>
+                        <form id="service-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Service Name</label>
+                                    <input type="text" class="form-control" id="service-name" required>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('service-form').reset(); adminDashboard.editingServiceId = null; this.nextElementSibling.textContent = 'Save Service';">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Service</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="data-table-container">
+                        <div class="data-table-header">
+                            <div class="data-table-title">Existing Services</div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Service Name</th>
+                                    <th>Avg Time (calculated)</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="services-table-body">
+                                <!-- Services data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Counters Section -->
+                <div id="counters-section" class="content-section hidden">
+                    <div class="form-container">
+                        <div class="form-header">
+                            <div class="form-title">Add New Counter</div>
+                        </div>
+                        <form id="counter-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Counter Name</label>
+                                    <input type="text" class="form-control" id="counter-name" placeholder="e.g., Counter 1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Service</label>
+                                    <select class="form-control" id="counter-service" required>
+                                        <option value="">Select Service</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-control" id="counter-location" placeholder="e.g., Ground Floor">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="adminDashboard.cancelCounterEdit()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Counter</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="data-table-container">
+                        <div class="data-table-header">
+                            <div class="data-table-title">Service Counters</div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Counter Name</th>
+                                    <th>Service</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="counters-table-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">
+                                        Loading counters...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users-section" class="content-section hidden">
+                    <div class="form-container">
+                        <div class="form-header">
+                            <div class="form-title" id="user-form-title">Add New User</div>
+                        </div>
+                        <form id="user-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="user-username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Password <span id="password-hint" style="font-size:0.8rem; color: var(--text-secondary);"></span></label>
+                                    <input type="password" class="form-control" id="user-password" minlength="6">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Role</label>
+                                    <select class="form-control" id="user-role" required>
+                                        <option value="2">Staff</option>
+                                        <option value="1">Admin</option>
+                                        <option value="3">Viewer</option>
+                                        <option value="4">Manager</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Assigned Counter (Staff only)</label>
+                                    <select class="form-control" id="user-counter">
+                                        <option value="">No Counter (Admin/Viewer)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="adminDashboard.cancelUserEdit()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Create User</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="data-table-container">
+                        <div class="data-table-header">
+                            <div class="data-table-title">System Users</div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Assigned Counter</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">Loading users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div id="analytics-section" class="content-section hidden">
+                    <div class="dashboard-overview">
+                        <div class="overview-card">
+                            <div class="overview-header">
+                                <div class="overview-title">Total Tickets (All Time)</div>
+                                <div class="overview-icon">🎫</div>
+                            </div>
+                            <div class="overview-value" id="analytics-total-tickets">0</div>
+                        </div>
+                        
+                        <div class="overview-card success">
+                            <div class="overview-header">
+                                <div class="overview-title">Completion Rate</div>
+                                <div class="overview-icon">✅</div>
+                            </div>
+                            <div class="overview-value" id="analytics-completion-rate">0%</div>
+                        </div>
+                        
+                        <div class="overview-card warning">
+                            <div class="overview-header">
+                                <div class="overview-title">Avg Service Time</div>
+                                <div class="overview-icon">⏱️</div>
+                            </div>
+                            <div class="overview-value" id="analytics-avg-time">0 min</div>
+                        </div>
+                        
+                        <div class="overview-card danger">
+                            <div class="overview-header">
+                                <div class="overview-title">No-Show Rate</div>
+                                <div class="overview-icon">❌</div>
+                            </div>
+                            <div class="overview-value" id="analytics-noshow-rate">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Service Performance</div>
+                        </div>
+                        <div class="chart-content">
+                            <p style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                Advanced analytics charts will be implemented here.<br>
+                                This would include service-wise breakdown, peak hours analysis, and trend graphs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings-section" class="content-section hidden">
+                    <div class="settings-panel">
+                        <div class="settings-header">
+                            <div class="settings-title">System Settings</div>
+                        </div>
+                        <form class="settings-content" id="settings-form">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Called Ticket Timeout</div>
+                                    <div class="setting-description">Minutes a called ticket can wait before the system treats it as missed</div>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="number" class="form-control" id="setting-called-timeout" min="1" max="60" required>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Second Chances</div>
+                                    <div class="setting-description">How many missed calls a ticket gets before cancellation</div>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="number" class="form-control" id="setting-second-chance" min="0" max="5" required>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Customer Alert Ring</div>
+                                    <div class="setting-description">Seconds the customer ticket page rings when status changes</div>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="number" class="form-control" id="setting-alert-ring" min="1" max="15" required>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Dashboard Refresh</div>
+                                    <div class="setting-description">Fallback refresh interval for dashboards in seconds</div>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="number" class="form-control" id="setting-auto-refresh" min="5" max="300" required>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-danger" id="close-day-btn">Close Day</button>
+                                <button type="button" class="btn btn-secondary" id="reload-settings-btn">Reload</button>
+                                <button type="submit" class="btn btn-primary">Save Settings</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal show">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Admin Login</h2>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket View Modal -->
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>Ticket Details</h2>
+                <button class="btn btn-sm btn-secondary" onclick="adminDashboard.closeTicketModal()">✕</button>
+            </div>
+            <div class="modal-body" id="ticket-modal-body">
+                <!-- Ticket details loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/admin.js"></script>
+
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+    </style>
+</body>
+</html>

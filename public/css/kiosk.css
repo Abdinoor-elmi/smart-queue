@@ -1,0 +1,507 @@
+/* Kiosk-specific styles for customer interface */
+
+.kiosk-container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #0f3f3b 0%, #0e7490 100%);
+    padding: clamp(0.75rem, 3vw, 2rem);
+    overflow-x: hidden;
+}
+
+.kiosk-header {
+    text-align: center;
+    color: white;
+    margin-bottom: clamp(1rem, 4vh, 3rem);
+    flex: 0 0 auto;
+}
+
+.kiosk-title {
+    font-size: clamp(1.75rem, 6vw, 3rem);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.kiosk-subtitle {
+    font-size: clamp(0.95rem, 2.5vw, 1.25rem);
+    opacity: 0.9;
+}
+
+.kiosk-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: min(1100px, 100%);
+    margin: 0 auto;
+    width: 100%;
+}
+
+.service-selection {
+    background: var(--card-background);
+    border-radius: 1rem;
+    padding: clamp(1rem, 4vw, 3rem);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.service-selection h2 {
+    font-size: clamp(1.35rem, 4vw, 2rem);
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+}
+
+.service-card {
+    background: #e0f2ef;
+    border: 2px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: clamp(1rem, 3vw, 2rem);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: clamp(120px, 18vh, 160px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.service-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.service-card.selected {
+    border-color: var(--primary-color);
+    background: #ccfbf1;
+}
+
+.service-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.service-card p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.service-card .avg-time {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: 0.5rem;
+}
+
+.kiosk-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+}
+
+.kiosk-btn {
+    padding: clamp(0.9rem, 2.5vw, 1.5rem) clamp(1.25rem, 5vw, 3rem);
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 600;
+    border-radius: 0.75rem;
+    min-height: clamp(54px, 9vh, 80px);
+    min-width: 200px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.kiosk-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.kiosk-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Ticket display */
+.ticket-display {
+    background: var(--card-background);
+    border-radius: clamp(0.75rem, 2vw, 1rem);
+    padding: clamp(1rem, 4vw, 3rem);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: min(920px, 100%);
+    max-height: calc(100dvh - clamp(7rem, 18vh, 12rem));
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.ticket-number {
+    font-size: clamp(2.5rem, 11vw, 5.25rem);
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: clamp(0.75rem, 2vw, 1rem);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ticket-info {
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+}
+
+.ticket-info h3 {
+    font-size: clamp(1.15rem, 3vw, 1.5rem);
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.ticket-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+    gap: clamp(0.65rem, 2vw, 1rem);
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+}
+
+.ticket-detail {
+    background: #e0f2ef;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    border-radius: 0.5rem;
+}
+
+.ticket-detail-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.ticket-detail-value {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.queue-status {
+    background: #ccfbf1;
+    border: 1px solid #5eead4;
+    border-radius: 0.5rem;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+}
+
+.queue-status h4 {
+    color: #134e4a;
+    margin-bottom: 0.5rem;
+}
+
+.estimated-wait {
+    font-size: clamp(1.5rem, 5vw, 2.25rem);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.print-instructions {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 0.5rem;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+}
+
+.print-instructions p {
+    color: #92400e;
+    margin: 0;
+}
+
+.ticket-share-panel {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+    text-align: left;
+}
+
+.ticket-share-label {
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.ticket-qr-code {
+    display: block;
+    width: 132px;
+    height: 132px;
+    margin: 0 auto 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: white;
+    padding: 0.35rem;
+}
+
+.ticket-share-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+}
+
+.ticket-share-row input {
+    min-width: 0;
+}
+
+/* Loading state */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+/* Responsive adjustments for kiosk */
+@media (max-width: 768px) {
+    .kiosk-container {
+        padding: 0.75rem;
+    }
+    
+    .kiosk-header {
+        margin-bottom: 0.75rem;
+    }
+    
+    .kiosk-title {
+        font-size: clamp(1.6rem, 8vw, 2rem);
+    }
+    
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .kiosk-actions {
+        flex-direction: column;
+    }
+
+    .ticket-share-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .kiosk-btn {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .ticket-display {
+        max-height: none;
+        min-height: auto;
+        border-radius: 0.85rem;
+    }
+    
+    .ticket-details {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .kiosk-subtitle {
+        display: none;
+    }
+    
+    .ticket-details {
+        grid-template-columns: 1fr;
+    }
+
+    .ticket-info h3 {
+        margin-bottom: 0.75rem;
+    }
+
+    .ticket-detail {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        align-items: center;
+        text-align: left;
+        gap: 0.75rem;
+    }
+
+    .ticket-detail-label {
+        margin-bottom: 0;
+    }
+
+    .kiosk-actions {
+        gap: 0.65rem;
+    }
+}
+
+@media (min-width: 900px) and (min-height: 700px) {
+    .ticket-display {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 2rem;
+        align-items: center;
+        text-align: left;
+    }
+
+    .ticket-number {
+        grid-row: span 3;
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    .ticket-info,
+    .queue-status,
+    .print-instructions {
+        margin-bottom: 0;
+    }
+
+    .ticket-display > .kiosk-actions,
+    .ticket-share-panel,
+    .status-message-box {
+        grid-column: 2;
+    }
+}
+
+@media print {
+    body {
+        background: white !important;
+    }
+
+    .kiosk-container {
+        background: white !important;
+        padding: 0;
+        min-height: auto;
+    }
+
+    .kiosk-header,
+    #service-selection,
+    .kiosk-actions,
+    .ticket-share-panel,
+    .notification-panel,
+    .connection-status-banner {
+        display: none !important;
+    }
+
+    .kiosk-content {
+        display: block;
+        max-width: none;
+    }
+
+    .ticket-display {
+        display: block !important;
+        box-shadow: none;
+        border: 2px dashed #102a43;
+        border-radius: 0;
+        max-width: none;
+        max-height: none;
+        color: #102a43;
+    }
+}
+
+
+/* Ticket Status Styles */
+.ticket-status {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    font-size: clamp(0.95rem, 2.6vw, 1.125rem);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.ticket-status.waiting {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.ticket-status.called {
+    background: #dbeafe;
+    color: #1e40af;
+    animation: pulse 2s infinite;
+}
+
+.ticket-status.serving {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.ticket-status.completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.ticket-status.no-show {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.ticket-status.cancelled {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.status-message-box {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.status-message-box {
+    margin: clamp(1rem, 3vw, 1.5rem) 0 !important;
+    padding: clamp(0.75rem, 2vw, 1rem) !important;
+    background: #f0fdfa !important;
+    border: 1px solid #99f6e4;
+}
+
+#status-message {
+    font-size: clamp(0.95rem, 2.8vw, 1.125rem) !important;
+    color: var(--text-primary);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

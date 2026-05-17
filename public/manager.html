@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQueue - Manager Reports</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="manager-page">
+    <div class="admin-container manager-container">
+        <div class="admin-main" id="manager-main" style="display: none; margin-left: 0;">
+            <div class="admin-header manager-header">
+                <div class="admin-header-content">
+                    <div>
+                        <h1>Manager Reports</h1>
+                        <p class="manager-subtitle">Build focused queue, counter, service, no-show, and cancellation reports.</p>
+                    </div>
+                    <div class="admin-actions">
+                        <span class="manager-user-chip" id="manager-user">Manager</span>
+                        <button id="logout-btn" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <div class="form-container manager-report-card">
+                    <div class="form-header">
+                        <div>
+                            <div class="form-title">Request Report</div>
+                            <p class="form-helper">Choose one report and narrow it by date, service, or counter.</p>
+                        </div>
+                    </div>
+                    <form id="report-form">
+                        <div class="manager-filter-grid">
+                            <div class="form-group report-type-field">
+                                <label class="form-label">Report Type</label>
+                                <select class="form-control" id="report-type" required>
+                                    <option value="summary">Summary</option>
+                                    <option value="queue">Active Queue</option>
+                                    <option value="service">Service Performance</option>
+                                    <option value="counter">Counter Activity</option>
+                                    <option value="peak">Peak Hours</option>
+                                    <option value="noshow">No-Show Report</option>
+                                    <option value="tickets">Ticket Details</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control" id="from-date">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control" id="to-date">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Service</label>
+                                <select class="form-control" id="service-filter">
+                                    <option value="all">All Services</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Counter</label>
+                                <select class="form-control" id="counter-filter">
+                                    <option value="all">All Counters</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions manager-actions">
+                            <button type="button" class="btn btn-secondary" id="reset-report-btn">Reset</button>
+                            <button type="button" class="btn btn-success" id="export-report-btn" disabled>Export CSV</button>
+                            <button type="button" class="btn btn-secondary" id="export-pdf-btn" disabled>Export PDF</button>
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="chart-container manager-output" id="report-output">
+                    <div class="chart-header">
+                        <div class="chart-title">Report Output</div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="empty-report-state">
+                            <div class="empty-report-title">No report generated yet</div>
+                            <p>Choose a report type and click Generate Report.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-modal" class="modal show">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Manager Login</h2>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/manager.js"></script>
+    <style>
+        .manager-page {
+            background: var(--background-color);
+        }
+
+        .manager-header {
+            border-bottom: 1px solid #d8e2ec;
+        }
+
+        .manager-header h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            color: var(--text-primary);
+        }
+
+        .manager-subtitle,
+        .form-helper {
+            margin: 0.25rem 0 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .manager-user-chip {
+            background: #e0f2ef;
+            color: #134e4a;
+            border: 1px solid #99d8d0;
+            padding: 0.45rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .manager-report-card,
+        .manager-output {
+            border-radius: 0.75rem;
+            border: 1px solid #d8e2ec;
+            box-shadow: 0 10px 25px rgba(16, 42, 67, 0.06);
+        }
+
+        .manager-filter-grid {
+            display: grid;
+            grid-template-columns: minmax(260px, 1.4fr) repeat(4, minmax(170px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .manager-filter-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        .manager-filter-grid .form-control {
+            min-height: 46px;
+            background-color: #fbfdff;
+        }
+
+        .manager-actions {
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .manager-actions .btn {
+            min-width: 132px;
+        }
+
+        .manager-output .chart-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .manager-output .chart-content {
+            color: var(--text-primary);
+        }
+
+        .manager-output .data-table {
+            table-layout: auto;
+        }
+
+        .manager-output .data-table th {
+            background: #dff1ee;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .manager-output .data-table td {
+            color: var(--text-primary);
+        }
+
+        .manager-output .dashboard-overview {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .manager-output .overview-card {
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+        }
+
+        .manager-output .overview-value {
+            font-size: 2rem;
+        }
+
+        .empty-report-state {
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-secondary);
+            background: #f0fdfa;
+            border: 1px dashed #99d8d0;
+            border-radius: 0.5rem;
+        }
+
+        .empty-report-title {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .manager-filter-grid {
+                grid-template-columns: repeat(2, minmax(220px, 1fr));
+            }
+
+            .report-type-field {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header-content,
+            .manager-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .manager-filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-type-field {
+                grid-column: auto;
+            }
+
+            .manager-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white !important;
+            }
+
+            .manager-header,
+            .manager-report-card,
+            .connection-status-banner,
+            .notification-panel {
+                display: none !important;
+            }
+
+            .admin-content {
+                padding: 0 !important;
+            }
+
+            .manager-output {
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .manager-output .chart-header {
+                display: block !important;
+            }
+        }
+    </style>
+</body>
+</html>
