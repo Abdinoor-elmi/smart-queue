@@ -255,6 +255,43 @@ class KioskInterface {
         this.lastTicketStatus = ticket.status;
     }
 
+    applyTransferredTicket(ticket) {
+        if (!this.currentTicket || ticket.ticket_id !== this.currentTicket.ticketId) {
+            return;
+        }
+
+        const service = this.services.find(item => item.service_id === ticket.service_id) || {
+            service_id: ticket.service_id,
+            name: ticket.service_name || 'Selected Service',
+            avg_time: 5
+        };
+
+        this.selectedService = service;
+        this.currentTicket.serviceId = ticket.service_id;
+        this.currentTicket.serviceName = service.name;
+
+        const serviceElement = document.getElementById('ticket-service');
+        if (serviceElement) {
+            serviceElement.textContent = service.name;
+        }
+
+        const counterElement = document.getElementById('ticket-counter');
+        if (counterElement) {
+            if (ticket.counter_name) {
+                counterElement.textContent = ticket.counter_name;
+            } else {
+                const serviceCounters = this.counters.filter(c => c.service_id === ticket.service_id && c.is_active);
+                const counterNames = serviceCounters.map(c => c.name).join(', ');
+                counterElement.textContent = counterNames || 'See staff for assistance';
+            }
+        }
+
+        this.updateTicketStatus(ticket);
+        this.updateQueuePosition();
+        this.playStatusAlert('waiting');
+        utils.showSuccess(`Your ticket was transferred to ${service.name}.`);
+    }
+
     prepareAlertSound() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -527,6 +564,14 @@ class KioskInterface {
             if (data.type === 'queue_update') {
                 // Update queue information if needed
                 this.updateQueueInfo(data);
+            } else if (data.type === 'ticket_update' && this.currentTicket && data.ticketId === this.currentTicket.ticketId) {
+                if (data.transferred && data.ticket) {
+                    this.applyTransferredTicket(data.ticket);
+                } else {
+                    api.request(`/api/tickets/${this.currentTicket.ticketId}`)
+                        .then(ticket => this.updateTicketStatus(ticket))
+                        .catch(error => console.error('Failed to refresh ticket update:', error));
+                }
             }
         });
     }

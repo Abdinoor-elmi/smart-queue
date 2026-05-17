@@ -445,13 +445,28 @@ app.put('/api/tickets/:ticketId/transfer', requireRole('admin', 'manager'), (req
         (err) => {
             if (err) return res.status(500).json({ error: 'Failed to transfer ticket' });
 
-            broadcast({
-                type: 'ticket_update',
-                ticketId,
-                status: 'waiting',
-                transferred: true
-            });
-            res.json({ success: true });
+            db.db.get(
+                `SELECT t.*, s.name as service_name, c.name as counter_name
+                 FROM tickets t
+                 JOIN services s ON t.service_id = s.service_id
+                 LEFT JOIN counters c ON t.counter_id = c.counter_id
+                 WHERE t.ticket_id = ?`,
+                [ticketId],
+                (selectErr, ticket) => {
+                    if (selectErr || !ticket) {
+                        return res.status(500).json({ error: 'Failed to load transferred ticket' });
+                    }
+
+                    broadcast({
+                        type: 'ticket_update',
+                        ticketId: ticket.ticket_id,
+                        status: ticket.status,
+                        transferred: true,
+                        ticket
+                    });
+                    res.json({ success: true, ticket });
+                }
+            );
         }
     );
 });
