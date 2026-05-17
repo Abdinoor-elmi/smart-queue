@@ -911,7 +911,7 @@ class AdminDashboard {
         }
 
         body.innerHTML = `
-            <div style="text-align:center; padding:1rem; background:var(--background-color); border-radius:8px; margin-bottom:1rem;">
+            <div class="ticket-summary">
                 <div style="font-size:2.5rem; font-weight:bold; color:var(--primary-color);">
                     ${utils.formatTicketNumber(ticket.ticket_number)}
                 </div>
@@ -948,7 +948,7 @@ class AdminDashboard {
                 </tr>
             </table>
             ${!['completed', 'no-show', 'cancelled'].includes(ticket.status) ? `
-                <div style="margin-top:1.5rem; padding:1rem; border:1px solid var(--border-color); border-radius:8px; background:var(--background-color);">
+                <div class="ticket-transfer-panel">
                     <div style="font-weight:800; margin-bottom:0.75rem;">Transfer Ticket</div>
                     <div class="grid grid-2" style="gap:0.75rem;">
                         <div>
@@ -978,7 +978,7 @@ class AdminDashboard {
                     </div>
                 </div>
             ` : ''}
-            <div style="margin-top:1.5rem; text-align:right;">
+            <div class="ticket-modal-actions">
                 <button class="btn btn-secondary" onclick="adminDashboard.closeTicketModal()">Close</button>
             </div>
         `;

@@ -453,12 +453,12 @@
 
     <!-- Ticket View Modal -->
     <div id="ticket-modal" class="modal">
-        <div class="modal-content" style="max-width: 520px;">
-            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="modal-content ticket-modal-content">
+            <div class="modal-header ticket-modal-header">
                 <h2>Ticket Details</h2>
                 <button class="btn btn-sm btn-secondary" onclick="adminDashboard.closeTicketModal()">✕</button>
             </div>
-            <div class="modal-body" id="ticket-modal-body">
+            <div class="modal-body ticket-modal-body" id="ticket-modal-body">
                 <!-- Ticket details loaded here -->
             </div>
         </div>
@@ -476,9 +476,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: color-mix(in srgb, black 50%, transparent);
             align-items: center;
             justify-content: center;
+            padding: 1rem;
             z-index: 1000;
         }
 
