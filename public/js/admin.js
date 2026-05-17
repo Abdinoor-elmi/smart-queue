@@ -804,7 +804,22 @@ class AdminDashboard {
         const select = document.getElementById('user-role');
         if (!select) return;
 
-        const roles = await api.request('/api/roles');
+        let roles = [
+            { role_id: 2, role_name: 'staff' },
+            { role_id: 1, role_name: 'admin' },
+            { role_id: 4, role_name: 'manager' },
+            { role_id: 3, role_name: 'viewer' }
+        ];
+
+        try {
+            const apiRoles = await api.request('/api/roles');
+            if (Array.isArray(apiRoles) && apiRoles.length > 0) {
+                roles = apiRoles;
+            }
+        } catch (error) {
+            console.error('Failed to load roles, using default role options:', error);
+        }
+
         const preferredOrder = ['staff', 'admin', 'manager', 'viewer'];
 
         roles.sort((a, b) => {
@@ -909,6 +924,7 @@ class AdminDashboard {
             const mins = Math.round((completed - created) / 60000);
             totalTime = `${mins} min`;
         }
+        const canTransferTicket = !['completed', 'no-show', 'cancelled', 'canceled'].includes(ticket.status);
 
         body.innerHTML = `
             <div class="ticket-summary">
@@ -947,9 +963,9 @@ class AdminDashboard {
                     <td style="padding:0.75rem 0; font-weight:500;">${totalTime}</td>
                 </tr>
             </table>
-            ${!['completed', 'no-show', 'cancelled'].includes(ticket.status) ? `
+            ${canTransferTicket ? `
                 <div class="ticket-transfer-panel">
-                    <div style="font-weight:800; margin-bottom:0.75rem;">Transfer Ticket</div>
+                    <div style="font-weight:800; margin-bottom:0.75rem;">Transfer / Assign Ticket</div>
                     <div class="grid grid-2" style="gap:0.75rem;">
                         <div>
                             <label class="form-label">Service</label>
@@ -973,12 +989,12 @@ class AdminDashboard {
                             </select>
                         </div>
                     </div>
-                    <div style="margin-top:0.75rem; text-align:right;">
-                        <button class="btn btn-primary" onclick="adminDashboard.transferTicket(${ticket.ticket_id})">Transfer</button>
-                    </div>
                 </div>
             ` : ''}
             <div class="ticket-modal-actions">
+                ${canTransferTicket ? `
+                    <button class="btn btn-primary" onclick="adminDashboard.transferTicket(${ticket.ticket_id})">Transfer / Assign</button>
+                ` : ''}
                 <button class="btn btn-secondary" onclick="adminDashboard.closeTicketModal()">Close</button>
             </div>
         `;
