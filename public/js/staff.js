@@ -7,6 +7,7 @@ class StaffDashboard {
         this.queue = [];
         this.counters = [];
         this.selectedCounter = null;
+        this.autoCallEnabled = utils.storage.get('staff_auto_call_enabled', true);
         this.init();
     }
 
@@ -329,21 +330,26 @@ class StaffDashboard {
         return svc ? (svc.avg_time || svc.default_avg_time || 0) : 0;
     }
 
-    async callNextTicket() {
+    async callNextTicket(options = {}) {
+        const { showEmptyError = true } = options;
+
         if (this.isOnBreak()) {
             utils.showError('You are on break. Resume work to call tickets.');
-            return;
+            return false;
         }
         
         // Queue is oldest-first, so find() returns the oldest ticket waiting to be called.
         const nextTicket = this.queue.find(t => t.status === 'waiting');
         
         if (!nextTicket) {
-            utils.showError('No tickets waiting in queue.');
-            return;
+            if (showEmptyError) {
+                utils.showError('No tickets waiting in queue.');
+            }
+            return false;
         }
 
         await this.callTicket(nextTicket.ticket_id);
+        return true;
     }
 
     async callTicket(ticketId) {
@@ -447,6 +453,10 @@ class StaffDashboard {
             utils.showSuccess('Ticket completed successfully.');
             
             await this.loadQueue();
+
+            if (this.autoCallEnabled && !this.isOnBreak()) {
+                await this.callNextTicket({ showEmptyError: false });
+            }
         } catch (error) {
             console.error('Failed to complete ticket:', error);
             utils.showError('Failed to complete ticket.');
@@ -641,6 +651,41 @@ class StaffDashboard {
             e.preventDefault();
             this.toggleBreakMode();
         });
+
+        document.getElementById('auto-call-mode').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.toggleAutoCallMode();
+        });
+
+        this.updateAutoCallToggle();
+    }
+
+    toggleAutoCallMode() {
+        this.autoCallEnabled = !this.autoCallEnabled;
+        utils.storage.set('staff_auto_call_enabled', this.autoCallEnabled);
+        this.updateAutoCallToggle();
+
+        if (this.autoCallEnabled) {
+            utils.showSuccess('Automatic next-ticket calling is on.');
+        } else {
+            utils.showSuccess('Automatic next-ticket calling is paused. Use Call manually for priority tickets.');
+        }
+    }
+
+    updateAutoCallToggle() {
+        const autoCallBtn = document.getElementById('auto-call-mode');
+        if (!autoCallBtn) return;
+
+        const autoCallIcon = autoCallBtn.querySelector('.quick-action-icon');
+        const autoCallLabel = autoCallBtn.querySelector('span');
+
+        autoCallBtn.classList.toggle('quick-action-paused', !this.autoCallEnabled);
+        autoCallBtn.setAttribute('aria-pressed', String(this.autoCallEnabled));
+        autoCallIcon.textContent = this.autoCallEnabled ? 'Auto' : 'Manual';
+        autoCallLabel.textContent = this.autoCallEnabled ? 'Auto Call On' : 'Auto Call Paused';
+        autoCallBtn.title = this.autoCallEnabled
+            ? 'Automatically call the next waiting ticket after completing service'
+            : 'Automation is paused so staff can call priority tickets manually';
     }
 
     showHistory() {

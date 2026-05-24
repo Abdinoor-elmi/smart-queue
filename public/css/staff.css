@@ -340,8 +340,20 @@
     transform: translateY(-1px);
 }
 
+.quick-action-btn.quick-action-paused {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #9a3412;
+}
+
+.quick-action-btn.quick-action-paused:hover {
+    background: var(--warning-color);
+    color: white;
+}
+
 .quick-action-icon {
     font-size: 1.5rem;
+    font-weight: 700;
 }
 
 /* Notifications */

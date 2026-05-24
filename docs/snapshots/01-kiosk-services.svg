@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#eef6fb"/>
+  <rect x="0" y="0" width="960" height="132" fill="#102a43"/>
+  <text x="480" y="62" text-anchor="middle" font-family="Segoe UI, Arial" font-size="42" font-weight="800" fill="#fff">SmartQueue</text>
+  <text x="480" y="98" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#d9e8f5">Digital Queue Management System</text>
+  <text x="480" y="176" text-anchor="middle" font-family="Segoe UI, Arial" font-size="26" font-weight="700" fill="#102a43">Select Your Service</text>
+  <g font-family="Segoe UI, Arial">
+    <rect x="110" y="220" width="220" height="150" rx="8" fill="#ffffff" stroke="#c9d7e3"/>
+    <text x="220" y="270" text-anchor="middle" font-size="22" font-weight="700" fill="#102a43">General Service</text>
+    <text x="220" y="306" text-anchor="middle" font-size="15" fill="#486581">Avg wait: 2 min</text>
+    <text x="220" y="334" text-anchor="middle" font-size="14" fill="#486581">Served at Counter 1</text>
+    <rect x="370" y="220" width="220" height="150" rx="8" fill="#ffffff" stroke="#c9d7e3"/>
+    <text x="480" y="270" text-anchor="middle" font-size="22" font-weight="700" fill="#102a43">Customer Support</text>
+    <text x="480" y="306" text-anchor="middle" font-size="15" fill="#486581">Avg wait: 4 min</text>
+    <text x="480" y="334" text-anchor="middle" font-size="14" fill="#486581">Served at Counter 2</text>
+    <rect x="630" y="220" width="220" height="150" rx="8" fill="#ffffff" stroke="#c9d7e3"/>
+    <text x="740" y="270" text-anchor="middle" font-size="22" font-weight="700" fill="#102a43">Technical Support</text>
+    <text x="740" y="306" text-anchor="middle" font-size="15" fill="#486581">Avg wait: 5 min</text>
+    <text x="740" y="334" text-anchor="middle" font-size="14" fill="#486581">Served at Counter 3</text>
+    <rect x="390" y="415" width="180" height="52" rx="6" fill="#2f80ed"/>
+    <text x="480" y="448" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">Get Ticket</text>
+  </g>
+</svg>

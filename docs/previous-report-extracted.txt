@@ -1,0 +1,814 @@
+   
+  
+  
+ 
+PROJECT  REPORT  SMARTQUEUE  
+A
+ 
+Digital
+ 
+Queue
+ 
+Management
+ 
+and
+ 
+Waiting
+ 
+Time
+ 
+Estimation
+ 
+System
+                      
+ 
+                                  Abdinoor  Ali  Elmi
+ 
+                                                     SCS3/149373/2024                                                         SUPERVISOR  
+Dr
+ 
+Muchemi
+                                       
+ 
+ 
+A  Project  Proposal  Submitted  in  Partial  Fulfillment  of  the  Requirements  for  the  Bachelor  
+of
+ 
+Science
+ 
+in
+ 
+Computer
+ 
+Science
+ 
+of
+ 
+the
+ 
+University
+ 
+of
+ 
+Nairobi.
+  
+March  2026   
+   
+
+
+DECLARATION
+I, Abdinoor Ali Elmi, hereby declare that this report represents my original work and has not
+been submitted for a degree at any other university or institution. All referenced sources have
+been appropriately acknowledged.
+Signature:
+Date:
+1
+
+ACKNOWLEDGEMENT
+I extend my deepest gratitude to my supervisor, Dr. Muchemi, for her insightful guidance and
+steadfast support throughout the course of this project.
+My appreciation also goes to the University of Nairobi’s Department of Computing and In-
+formatics for providing an enriching environment and the necessary resources to facilitate this
+work. I am thankful to the service staff and administrators who contributed valuable perspec-
+tives during the requirements-gathering phase. Finally, I acknowledge my peers for their con-
+structive feedback and encouragement, which were instrumental in shaping this project.
+2
+
+ABSTRACT
+The Smart Queue Management System (SQMS) is an innovative web-based platform engi-
+neered to modernize queue management operations at customer-facing service organizations.
+By automating critical processes such as ticket issuance, counter assignment, real-time queue
+status broadcasting, and service time analytics, SQMS addresses the inefficiencies of traditional
+manual queue management systems.
+Developed using the Agile methodology, the system incorporates role-based access control for
+administrators, staff, kiosk users, and public display viewers, alongside WebSocket-powered
+real-time updates to ensure all stakeholders have instant visibility into queue state.
+SQMS aligns with contemporary digital transformation trends in service delivery, delivering
+a scalable, lightweight, and efficient solution that elevates operational efficiency and fosters a
+seamless service experience for customers and staff alike.
+3
+
+Contents
+DECLARATION 1
+ACKNOWLEDGEMENT 2
+ABSTRACT 3
+LIST OF FIGURES 6
+ABBREVIATIONS 7
+1 INTRODUCTION 8
+1.1 Background . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+1.2 Problem Statement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+1.3 Objectives . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+1.4 Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.5 Significance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.6 Justification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+2 REVIEW OF SIMILAR SYSTEMS 11
+2.1 Overview of Similar Systems . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+2.1.1 Q-Nomy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+2.1.2 Qmatic . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+2.1.3 Skiplino . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+2.2 Gaps in Current Systems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+2.3 The Proposed System . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+3 SYSTEM ANALYSIS AND DESIGN 13
+3.1 Systems Analysis and Design Methodology . . . . . . . . . . . . . . . . . . . 13
+3.2 System Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+3.2.1 Requirements Elicitation . . . . . . . . . . . . . . . . . . . . . . . . . 14
+3.2.2 Requirements Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+3.3 System Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+3.3.1 Architectural Design . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+3.3.2 Processes Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+3.3.3 Database Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+3.3.4 Application Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+3.3.5 User Interface Design . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+3.3.6 Integration Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+3.3.7 Technology Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+4
+
+3.4 Resources . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+3.5 Project Timeline . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+4 SYSTEM IMPLEMENTATION 32
+4.1 Resources . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+4.1.1 Hardware . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+4.1.2 Software . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+4.2 Technologies . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+CONCLUSION 34
+REFERENCES 35
+APPENDIX: Source Code Excerpts 36
+5
+
+List of Figures
+1 Agile Development Methodology . . . . . . . . . . . . . . . . . . . . . . . . 13
+2 System Architecture Design . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+3 System Use Case Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+4 Level 0 Data Flow Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+5 Level 1 Data Flow Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+6 System Ticket Workflow Process . . . . . . . . . . . . . . . . . . . . . . . . . 21
+7 System Module and Component Diagram . . . . . . . . . . . . . . . . . . . . 22
+8 Database Entity Relationship Diagram . . . . . . . . . . . . . . . . . . . . . . 23
+9 System Application Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+10 Customer Kiosk Interface . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+11 Staff Queue Management Dashboard . . . . . . . . . . . . . . . . . . . . . . . 26
+12 Admin Management Dashboard . . . . . . . . . . . . . . . . . . . . . . . . . 27
+13 Public Ticket Display Board . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+14 System Integration Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+15 System Technology Design Stack . . . . . . . . . . . . . . . . . . . . . . . . 30
+16 Project Gantt Chart . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+6
+
+ABBREVIATIONS
+1.SQMS- Smart Queue Management System
+2.RBAC- Role-Based Access Control
+3.UI- User Interface
+4.API- Application Programming Interface
+5.WS- WebSocket Protocol
+6.DFD- Data Flow Diagram
+7.SQL- Structured Query Language
+8.VS Code- Visual Studio Code
+9.HTTP- Hypertext Transfer Protocol
+10.REST- Representational State Transfer
+11.CRUD- Create, Read, Update, Delete
+7
+
+1 INTRODUCTION
+1.1 Background
+Traditional queue management systems are reliant on manual processes and often struggle with
+inefficiencies in ticket issuance, counter assignment, and real-time status visibility for both
+customers and staff. Long wait times, disorganized service areas, and the absence of data-driven
+insights into service performance limit the effectiveness of service organizations globally. The
+rise of digital technologies presents a significant opportunity to transform these operations into
+streamlined, transparent, and user-centric services.
+The Smart Queue Management System (SQMS) leverages modern web technologies, includ-
+ing Node.js, Express.js, SQLite, and the WebSocket protocol, to deliver a sophisticated yet
+lightweight solution for service organizations. By introducing automation and real-time com-
+munication, SQMS aims to enhance operational efficiency, improve customer experience, and
+elevate overall service quality for customers, staff, and administrators.
+1.2 Problem Statement
+Service organizations that rely on traditional queue management face significant challenges,
+including:
+1. Manual ticket issuance requiring dedicated reception staff, increasing operational costs.
+2. Inability for staff to efficiently track and prioritize queue positions across multiple counters.
+3. Absence of historical service data for analyzing and improving average service times.
+4. High cost or infrastructure complexity of commercial queue management solutions.
+These limitations result in poor customer satisfaction, staff inefficiency, and missed opportuni-
+ties for continuous service improvement. SQMS addresses these issues through a self-service
+kiosk, a real-time display board, and a data-driven wait time estimation engine.
+1.3 Objectives
+The SQMS project aims:
+1. To develop a web-based queue management system with self-service ticket issuance via a
+kiosk interface.
+2. To implement real-time queue status broadcasting to all clients using the WebSocket proto-
+col.
+8
+
+3. To automate the full ticket lifecycle from issuance through calling, serving, and completion.
+4. To implement secure session-based authentication with role-based access control for admin-
+istrators, staff, and display viewers.
+5. To provide service time analytics through a moving average calculation on completed ser-
+vice transactions.
+1.4 Scope
+The SQMS focuses on automating core queue management functions through a responsive web-
+based platform accessible on desktops, laptops, tablets, and display screens via standard web
+browsers. The system provides four distinct interfaces: a customer self-service kiosk, a staff
+queue management dashboard, an administrator configuration panel, and a public display board
+for real-time service status.
+The system supports multiple service types and multiple service counters, with each counter
+assigned to a specific service. This phase excludes the development of a native mobile appli-
+cation, SMS or email notifications, integration with third-party hardware ticket printers, and
+offline operation, which may be explored in future iterations.
+1.5 Significance
+SQMS delivers substantial benefits across all stakeholder groups. Customers benefit from self-
+service ticket issuance and accurate real-time wait time estimates, reducing perceived waiting
+time and frustration. Staff benefit from a centralized queue dashboard that eliminates the need
+to manage physical queues manually, enabling them to focus fully on service delivery. Admin-
+istrators gain visibility into service performance and can configure services, counters, and user
+accounts without technical intervention.
+By aligning with digital transformation trends in public and private sector service organizations,
+SQMS improves operational efficiency and fosters a transparent, data-driven service environ-
+ment that supports continuous improvement.
+1.6 Justification
+The project addresses a genuine operational pain point common to government service offices,
+banks, hospitals, and retail organizations. Commercial queue management solutions such as Q-
+Nomy and Qmatic require substantial licensing investment and complex proprietary infrastruc-
+ture that is inaccessible to smaller organizations. SQMS provides a fully open-source, browser-
+based alternative that can be deployed on commodity cloud infrastructure, removing hardware
+9
+
+dependencies and democratizing access to professional queue management capabilities for or-
+ganizations of all sizes.
+10
+
+2 REVIEW OF SIMILAR SYSTEMS
+2.1 Overview of Similar Systems
+Several queue management solutions exist, but most are expensive enterprise products that re-
+quire proprietary hardware, vendor-specific infrastructure, or ongoing subscription fees. Below
+are three existing systems and how they compare to the proposed Smart Queue Management
+System.
+2.1.1 Q-Nomy
+Q-Nomy is an enterprise queue management and customer journey platform offering compre-
+hensive features, including appointment scheduling, virtual queuing, multi-branch support, and
+advanced analytics dashboards. It is widely used by large-scale organizations such as banks,
+telecommunications companies, and government agencies.
+While Q-Nomy provides highly sophisticated functionality, it requires significant financial in-
+vestment in licensing and often demands dedicated on-premise hardware for kiosk terminals
+and display systems. Its complexity and cost make it unsuitable for smaller organizations or
+those seeking a lightweight, browser-based deployment. The proposed SQMS delivers core
+queue management capabilities in a fully open-source, browser-based solution that requires no
+proprietary hardware.
+2.1.2 Qmatic
+Qmatic is a Swedish enterprise customer journey management system widely used in health-
+care, banking, and government sectors. It provides physical queue management hardware, cus-
+tomer feedback collection, multi-language support, and business intelligence reporting inte-
+grated into a comprehensive platform.
+Qmatic excels in enterprise-scale deployments requiring dedicated hardware integration, but its
+high total cost of ownership and infrastructure requirements make it inaccessible to medium and
+small organizations. The SQMS addresses this gap by delivering real-time queue management
+entirely through standard web browsers and an embedded SQLite database, requiring only a
+server capable of running Node.js.
+2.1.3 Skiplino
+Skiplino is a cloud-based smart queue management system that allows customers to book their
+place in queues remotely via a mobile application. It targets retail, healthcare, and government
+sectors and provides real-time analytics, customer feedback tools, and multi-branch manage-
+ment through a subscription-based model.
+11
+
+Skiplino offers greater customer convenience through its mobile application, but it depends
+entirely on its proprietary cloud infrastructure and requires ongoing subscription fees. The
+proposed SQMS offers a self-hostable, open-source alternative that organizations can deploy
+on their own infrastructure, maintain full control of their data, and operate without recurring
+licensing costs.
+2.2 Gaps in Current Systems
+Analysis of existing systems reveals several critical gaps:
+1. The high cost and complexity of enterprise solutions make them inaccessible to smaller
+service organizations and public sector institutions with limited budgets.
+2. Dependence on proprietary hardware for kiosk terminals and display boards creates vendor
+lock-in and increases the total cost of ownership.
+3. No lightweight, open-source solution combines real-time WebSocket broadcasting, role-
+based access control, and moving-average service time analytics in a single deployable
+package.
+2.3 The Proposed System
+The SQMS distinguishes itself by integrating self-service ticket issuance, real-time WebSocket
+broadcasting, role-based access control, and moving-average service time analytics into a co-
+hesive, lightweight platform built on Node.js and SQLite. Unlike existing enterprise solutions,
+SQMS is fully open-source, requires no proprietary hardware, and can be deployed on com-
+modity cloud infrastructure, making it an accessible and transformative solution for service
+organizations of all sizes.
+12
+
+3 SYSTEM ANALYSIS AND DESIGN
+3.1 Systems Analysis and Design Methodology
+The SQMS project adopts the Agile Software Development Methodology, valued for its iterative
+and adaptive approach. Agile facilitates continuous improvement through incremental develop-
+ment cycles, enabling the system to evolve based on user feedback and emerging requirements.
+This methodology supports rapid prototyping, frequent testing, and user-centric design, mak-
+ing it an ideal framework for a queue management system whose requirements were refined
+iteratively through observation of real service environments.
+Figure 1: Agile Development Methodology
+13
+
+3.2 System Analysis
+3.2.1 Requirements Elicitation
+This process employed a combination of methods, including interviews, observations of existing
+queue environments, and use case scenarios to ensure a comprehensive understanding of both
+functional and non-functional requirements.
+Interviews:Interviews with primary stakeholders, including service counter staff, supervisors,
+and customers, were conducted to identify pain points in existing queue systems and gather
+insights into desired features for a digital queue management platform. These discussions fo-
+cused on the need for efficient ticket tracking, real-time visibility, and automation of queue
+assignment.
+Observations:Direct observation of service environments, including bank branches and gov-
+ernment service counters, provided practical insight into queue flow patterns, peak load periods,
+and the specific interactions between customers and service staff that the system needed to sup-
+port.
+Use Cases:Use cases were created to outline how various user roles, including customers at
+the kiosk, service staff, administrators, and display viewers, interact with the system. These
+scenarios defined functional requirements related to ticket issuance, counter assignment, queue
+status broadcasting, and system administration.
+Developing the Smart Queue Management System leads to the following improvements:
+1.Streamlined Operations:Transitioning to an automated system replaces manual ticket
+issuance, reducing errors in queue tracking and improving the speed of service transactions.
+2.Enhanced Visibility:The real-time display board provides customers with immediate vis-
+ibility into service status, reducing uncertainty and perceived waiting time.
+3.Time Efficiency:Automation of queue ordering and counter assignment reduces the ad-
+ministrative burden on staff, allowing them to focus entirely on serving customers.
+3.2.2 Requirements Analysis
+Based on the outlined requirements, the proposed system has the following functionalities:
+Functional Requirements
+1.Self-Service Ticket Issuance:Customers select their desired service from the kiosk and
+receive a uniquely numbered ticket together with an estimated wait time based on the current
+14
+
+queue length and historical service averages.
+2.Real-Time Queue Broadcasting:All connected clients receive instant updates via Web-
+Socket whenever a ticket is issued, called, or completed, ensuring consistent queue state
+across the kiosk, staff dashboard, and display board.
+3.Staff Queue Management:Authenticated staff can view the current queue for their as-
+signed service, call the next ticket, mark it as serving, and complete service, advancing the
+ticket through its full lifecycle.
+4.Counter Assignment:Each service counter is configured to handle a specific service type.
+When a ticket is called, it is associated with the calling counter so the display board can
+direct customers accurately.
+5.Admin System Configuration:Administrators can create and manage services, counters,
+and user accounts through a dedicated admin panel, with full CRUD operations supported
+via a REST API.
+6.Service Time Analytics:The system calculates estimated wait times using a moving aver-
+age of the last 20 completed service transactions per service type, providing dynamic and
+accurate predictions.
+7.Public Display Board:A dedicated view shows customers which ticket numbers are cur-
+rently being served and at which counter, providing real-time service status without requir-
+ing authentication.
+Non-Functional Requirements
+1.Performance:The system must handle concurrent WebSocket connections from all active
+kiosk terminals, staff workstations, and display boards simultaneously without degradation.
+2.Security:All user authentication must use bcrypt password hashing, and access to staff and
+admin functions must be protected by session-based authentication with role verification on
+every API request.
+3.Scalability:The system must support future expansion to additional service types and coun-
+ters, with the SQLite database replaceable by a more scalable RDBMS as load increases.
+4.Usability:Each interface must be purpose-designed for its specific context, ensuring a
+seamless experience for users of varying technical proficiency.
+5.Compatibility:The system must be accessible on major web browsers on desktops, laptops,
+tablets, and display hardware.
+15
+
+6.Maintainability:The system is structured with clear separation between API routes, database
+logic, and frontend assets, facilitating easy updates and debugging.
+7.Data Integrity:SQLite foreign key constraints are enforced across all related tables to
+preserve the accuracy of ticket, counter, and transaction records.
+16
+
+3.3 System Design
+3.3.1 Architectural Design
+SQMS follows a single-server client-server architecture. The Express.js server simultaneously
+serves static HTML/CSS/JavaScript assets to browser clients and exposes a REST API for data
+operations. A WebSocket server runs on the same port, enabling bidirectional real-time com-
+munication. All persistent data is stored in an embedded SQLite database, minimizing infras-
+tructure requirements while delivering real-time capabilities.
+Figure 2: System Architecture Design
+17
+
+3.3.2 Processes Design
+The operational workflows of SQMS are depicted through a set of process diagrams covering
+system interactions, data flows, ticket lifecycle, and module structure.
+Use Case Diagram
+The Use Case Diagram illustrates the interactions between the four system actors, Customer,
+Staff, Administrator, and Display Viewer, and the core operations of the SQMS. It defines the
+system boundary by mapping each actor to the specific functions they are permitted to perform.
+Figure 3: System Use Case Diagram
+18
+
+Level 0 Data Flow Diagram
+The Level 0 DFD presents the system as a single process, showing the high-level flow of data
+between external entities, Customer, Staff, Administrator, and the SQMS. It highlights the pri-
+mary inputs and outputs of the system without exposing its internal structure.
+Figure 4: Level 0 Data Flow Diagram
+19
+
+Level 1 Data Flow Diagram
+The Level 1 DFD breaks down the internal processes of the SQMS, including ticket issuance,
+queue management, counter management, user management, and service analytics. It shows
+how data flows between these processes and the underlying data stores, providing a detailed
+view of the functional decomposition of the system.
+Figure 5: Level 1 Data Flow Diagram
+20
+
+Ticket Workflow
+The Ticket Workflow diagram illustrates the lifecycle of a single ticket from creation to com-
+pletion, detailing the four status transitions, Waiting, Called, Serving, and Completed, and the
+staff actions and WebSocket broadcasts that trigger each transition.
+Figure 6: System Ticket Workflow Process
+21
+
+Module and Component Diagram
+The Module and Component Diagram presents the structural breakdown of the SQMS applica-
+tion, showing the relationship between the server entry point, the database module, and the four
+client-facing frontend modules: kiosk, staff dashboard, admin panel, and display board.
+Figure 7: System Module and Component Diagram
+22
+
+3.3.3 Database Design
+The SQMS database consists of six relational tables:roles,users,services,counters,
+tickets, andservice_transactions. Foreign key constraints are defined across all related
+tables to ensure referential integrity. Theservice_transactionstable records the start and
+completion time of each service interaction, forming the basis for the moving average wait time
+calculation.
+Figure 8: Database Entity Relationship Diagram
+23
+
+3.3.4 Application Design
+The application design depicts the internal structure of the SQMS, including the server-side
+modules responsible for API routing, WebSocket management, and database operations, along-
+side the four client-side frontend modules, each serving a specific user role.
+Figure 9: System Application Design
+24
+
+3.3.5 User Interface Design
+The SQMS provides four purpose-built browser interfaces — Kiosk, Staff Dashboard, Admin
+Panel, and Display Board. Each is designed for its specific operational context and connects to
+the same WebSocket endpoint to receive live queue updates, as shown in Figures 10, 11, 12,
+and 13.
+Kiosk Interface
+The Kiosk Interface is the customer-facing self-service screen. It presents available service
+types as selectable cards. Upon selection, the system generates a ticket and displays the ticket
+number, queue position, and estimated wait time to the customer.
+Figure 10: Customer Kiosk Interface
+25
+
+Staff Dashboard
+The Staff Dashboard is accessible after authentication. It displays the live queue for the staff
+member’s assigned service counter, with action buttons to call the next ticket, mark it as serving,
+and complete the service interaction. Staff can also navigate to their service history from this
+view.
+Figure 11: Staff Queue Management Dashboard
+26
+
+Admin Dashboard
+The Admin Dashboard is accessible to users with the administrator role. It provides full CRUD
+management of services, service counters, and user accounts through a tabbed interface. Ad-
+ministrators can create services with configurable default average times, assign counters to spe-
+cific services, and manage staff credentials and counter assignments.
+Figure 12: Admin Management Dashboard
+27
+
+Display Board
+The Display Board is a public-facing screen requiring no authentication. It shows customers
+which ticket numbers are currently being called and at which service counter, and is automati-
+cally updated via WebSocket whenever a staff member calls a new ticket.
+Figure 13: Public Ticket Display Board
+28
+
+3.3.6 Integration Design
+The Integration Design illustrates how the four client interfaces, Kiosk, Staff Dashboard, Admin
+Panel, and Display Board, communicate with the Express REST API over HTTP and with the
+WebSocket server for real-time broadcasts.
+Figure 14: System Integration Design
+29
+
+3.3.7 Technology Design
+The Technology Design defines the full technology stack of the SQMS, from the client-side web
+technologies through the server runtime, framework, real-time communication layer, database,
+and cloud deployment infrastructure.
+Figure 15: System Technology Design Stack
+30
+
+3.4 Resources
+The development of SQMS leveraged the following resources:
+1.Hardware:A laptop with 8GB RAM and an Intel Core i5 processor served as the pri-
+mary development machine, providing sufficient performance for running the Node.js de-
+velopment server, browser-based testing across multiple client views simultaneously, and
+database inspection.
+2.Development Stack:The frontend was built using vanilla HTML5, CSS3, and JavaScript
+with no frontend framework dependency. The backend utilized Node.js with Express.js
+for REST API routing and static asset serving. SQLite3, accessed via thesqlite3npm
+package, served as the embedded database. Thewslibrary provided the WebSocket server,
+bcrypthandled password hashing, andexpress-sessionmanaged authenticated user ses-
+sions.
+3.5 Project Timeline
+The Gantt Chart in Figure 16 outlines the project timeline and milestones across the five devel-
+opment phases.
+Figure 16: Project Gantt Chart
+31
+
+4 SYSTEM IMPLEMENTATION
+4.1 Resources
+4.1.1 Hardware
+Development and testing were conducted on a laptop with 8GB RAM and an Intel Core i5
+processor, providing sufficient performance for coding, running the local Node.js development
+server, and validating WebSocket real-time behaviour across multiple simultaneous browser
+sessions, simulating different user roles.
+4.1.2 Software
+The development environment included Visual Studio Code as the primary code editor with
+the ESLint extension for code quality, GitHub for version control, and the DB Browser for
+SQLite desktop application for database inspection and schema validation during development.
+Nodemon was used during development to enable automatic server restarts on file changes.
+4.2 Technologies
+SQMS was implemented using a modern, lightweight technology stack selected for minimal
+infrastructure requirements and ease of deployment:
+Frontend:Vanilla HTML5, CSS3, and JavaScript with no framework dependency. Each of the
+four views, kiosk, staff, admin, and display, has a dedicated HTML file with a corresponding
+JavaScript module and stylesheet, keeping the bundle small and loading fast on any device.
+Backend:Node.js with Express.js handles all server-side REST API routing, session manage-
+ment, and static asset serving. The single-process architecture keeps deployment simple while
+supporting all required concurrent connections.
+Database:SQLite3 via thesqlite3npm package provides an embedded relational database
+requiring no separate server process. The database path is configurable via an environment
+variable to support both local development and cloud deployment.
+Real-Time Communication:ThewsWebSocket library runs a WebSocket server on the same
+HTTP server instance as Express. All queue state changes, ticket issuance, status updates, and
+completions are broadcast in real time to all connected clients using a centralizedbroadcast()
+function.
+Authentication:bcryptis used for secure password hashing at account creation and login.
+express-sessionmanages authenticated sessions with cookie security configured for pro-
+32
+
+duction deployment via environment variables.
+Deployment:The application is containerized via a Dockerfile and deployed on Render.com
+cloud infrastructure. Therender.yamlconfiguration file defines the web service, environment
+variables, and build and start commands.
+33
+
+CONCLUSION
+The Smart Queue Management System (SQMS) successfully modernizes queue management
+operations by integrating self-service ticket issuance, real-time WebSocket broadcasting, role-
+based access control, and moving-average service time analytics into a cohesive, open-source
+web platform. Developed iteratively using the Agile methodology, SQMS eliminates manual
+queue management inefficiencies, reduces customer wait time uncertainty, and empowers ser-
+vice organizations with data-driven insights through dynamic wait time estimation.
+Its fully browser-based design, embedded SQLite database, and containerized deployment elim-
+inate proprietary hardware dependencies and make the system accessible to organizations of all
+sizes at a fraction of the cost of commercial alternatives. The four purpose-built interfaces, cus-
+tomer kiosk, staff dashboard, admin panel, and public display board, each serve a distinct role
+in the service workflow, ensuring that all stakeholders have the right information at the right
+time.
+SQMS sets a practical standard for lightweight, modern queue management and provides a
+strong foundation for future enhancements, including SMS and email notifications, mobile ap-
+plication support, and multi-branch analytics.
+34
+
+REFERENCES
+Books
+Tilkov, S., & Vinoski, S. (2010). Node.js: Using JavaScript to Build High-Performance Net-
+work Programs.IEEE Internet Computing, 14(6), 80–83.
+Brown, E. (2019).Web Development with Node and Express: Leveraging the JavaScript Stack
+(2nd ed.). O’Reilly Media.
+Silberschatz, A., Korth, H. F., & Sudarshan, S. (2020).Database System Concepts. McGraw-
+Hill Education.
+Web Resources
+Node.js Foundation. (2024). Node.js Documentation. Retrieved from https://nodejs.org/en/docs/
+Express.js Contributors. (2024). Express.js API Reference. Retrieved from https://expressjs.com/
+WebSocket API. (2024). MDN Web Docs. Retrieved from https://developer.mozilla.org/en-
+US/docs/Web/API/WebSocket
+ws: a Node.js WebSocket library. (2024). Retrieved from https://github.com/websockets/ws
+Render Documentation. (2024). Deploying a Node.js Application. Retrieved from https://render.com/docs/node-
+express-app
+bcrypt npm package. (2024). Retrieved from https://www.npmjs.com/package/bcrypt
+35
+
+APPENDIX: Source Code Excerpts
+The following excerpts present key sections of the SQMS implementation. Full source code is
+available at the project repository.
+A.1 Server Entry Point and WebSocket Setup (server/app.js)
+This excerpt shows the server initialisation, the WebSocket connection handler, and thebroadcast()
+function that pushes real-time queue updates to all connected browser clients whenever a ticket
+changes state.
+1const express = require ( ’ express ’) ;
+2const http = require ( ’ http ’) ;
+3const WebSocket = require ( ’ ws ’) ;
+4const session = require ( ’ express - session ’) ;
+5const Database = require ( ’ ./ database ’) ;
+6
+7const app = express () ;
+8const server = http . c r e a t e S e r v e r ( app ) ;
+9const wss = new WebSocket . Server ({ server }) ;
+10
+11const db = new Database () ;
+12
+13// Store all active WebSocket c on n e c ti o n s
+14const clients = new Set () ;
+15
+16wss . on ( ’ connection ’ , ( ws ) = > {
+17clients . add ( ws ) ;
+18ws . on ( ’ close ’ , () = > clients . delete ( ws ) ) ;
+19}) ;
+20
+21// Broadcast a JSON message to every connected client
+22function broadcast ( data ) {
+23const message = JSON . stringify ( data ) ;
+24clients . forEach ( client = > {
+25if ( client . r eadyState === WebSocket . OPEN ) {
+26client . send ( message ) ;
+27}
+28}) ;
+29}
+30
+31// Session - based a u t h e n t i c a t i o n guard
+36
+
+32function re q u i re A u t h ( req , res , next ) {
+33if ( req . session . user ) return next () ;
+34res . status (401) . json ({ error : ’ A u t h e n t i c a t i o n required ’ }) ;
+35}
+Listing 1: WebSocket server setup and broadcast function (server/app.js)
+37
+
+A.2 Ticket Issuance Endpoint (server/app.js)
+When a customer selects a service at the kiosk, aPOST /api/ticketsrequest is sent. The
+server generates a ticket, calculates the estimated wait time using the moving average, and
+broadcasts a queue update to all clients.
+1app . post ( ’/ api / tickets ’ , ( req , res ) = > {
+2const { serviceId } = req . body ;
+3
+4db . c r e a t e T i c k e t ( serviceId , ( err , ticketId , t i c k e t N u m b e r ) = > {
+5if ( err ) return res . status (500) . json ({ error : ’ Failed to
+create ticket ’ }) ;
+6
+7// Get the moving average service time for this service
+8db . g e t M o v i n g A v e r a g e ( serviceId , ( err , avgTime ) = > {
+9db . g e t Q u e u e S t a t u s ( serviceId , ( err , queue ) = > {
+10const position = queue . length ;
+11const e s t i m a t e d W a i t = position * ( avgTime || 5) ;
+12
+13// Broadcast queue length change to all connected
+views
+14broadcast ({
+15type : ’ q u e u e _ u p d a t e ’ ,
+16serviceId ,
+17queue : queue . length + 1
+18}) ;
+19
+20res . json ({ ticketId , ticketNumber , position :
+position + 1 , e s t i m a t e d W a i t }) ;
+21}) ;
+22}) ;
+23}) ;
+24}) ;
+Listing 2: Ticket creation with estimated wait time (server/app.js)
+38
+
+A.3 Ticket Status Update Endpoint (server/app.js)
+Staff actions (call, serve, complete) all callPUT /api/tickets/:ticketId/status. Each
+transition timestamps the relevant field, optionally assigns a counter, records a service transac-
+tion, and broadcasts the change.
+1app . put ( ’/ api / tickets /: ticketId / status ’ , requireAuth , ( req , res ) = >
+{
+2const { ticketId } = req . params ;
+3const { status , counterId } = req . body ;
+4
+5db . u p d a t e T i c k e t S t a t u s ( ticketId , status , counterId , ( err ) = > {
+6if ( err ) return res . status (500) . json ({ error : ’ Failed to
+update status ’ }) ;
+7
+8// On serving : open a service t r a n sa c t io n record
+9if ( status === ’ serving ’ && counterId ) {
+10db . c r e a t e S e r v i c e T r a n s a c t i o n ( ticketId , counterId , ( err )
+= > {
+11if ( err ) console . error ( ’ Failed to create service
+t r an s a ct i o n : ’ , err ) ;
+12}) ;
+13}
+14
+15// On completion : close the service t ra n s a ct i o n ( records
+duration )
+16if ( status === ’ completed ’) {
+17db . c o m p l e t e S e r v i c e T r a n s a c t i o n ( ticketId , ( err ) = > {
+18if ( err ) console . error ( ’ Failed to complete service
+t r an s a ct i o n : ’ , err ) ;
+19}) ;
+20}
+21
+22// Notify all connected clients of the state change
+23broadcast ({ type : ’ t i c k e t _ u p d a t e ’ , ticketId , status }) ;
+24res . json ({ success : true }) ;
+25}) ;
+26}) ;
+Listing 3: Ticket lifecycle status transitions (server/app.js)
+39
+
+A.4 Database Schema Initialisation (server/database.js)
+Theinit()method creates all six tables on first run. Migration checks usingPRAGMA table_info
+ensure new columns are added safely to existing databases without data loss.
+1this . db . run ( ‘ CREATE TABLE IF NOT EXISTS roles (
+2role_id INTEGER PRIMARY KEY AUTOINCREMENT ,
+3role_name TEXT UNIQUE NOT NULL ,
+4p er m i ss i o n s TEXT NOT NULL
+5) ‘) ;
+6
+7this . db . run ( ‘ CREATE TABLE IF NOT EXISTS users (
+8user_id INTEGER PRIMARY KEY AUTOINCREMENT ,
+9username TEXT UNIQUE NOT NULL ,
+10p a s s w o r d _ h a s h TEXT NOT NULL ,
+11role_id INTEGER NOT NULL ,
+12counter_id INTEGER ,
+13FOREIGN KEY ( role_id ) REFERENCES roles ( role_id ) ,
+14FOREIGN KEY ( counter_id ) REFERENCES counters ( counter_id )
+15) ‘) ;
+16
+17this . db . run ( ‘ CREATE TABLE IF NOT EXISTS tickets (
+18ticket_id INTEGER PRIMARY KEY AUTOINCREMENT ,
+19t i c k e t _ n u m b e r TEXT NOT NULL ,
+20service_id INTEGER NOT NULL ,
+21counter_id INTEGER ,
+22status TEXT DEFAULT ’ waiting ’ ,
+23created_at DATETIME DEFAULT CURRENT_TIMESTAMP ,
+24called_at DATETIME ,
+25served_at DATETIME ,
+26c o m p l e t e d _ a t DATETIME ,
+27FOREIGN KEY ( service_id ) REFERENCES services ( service_id ) ,
+28FOREIGN KEY ( counter_id ) REFERENCES counters ( counter_id )
+29) ‘) ;
+30
+31this . db . run ( ‘ CREATE TABLE IF NOT EXISTS s e r v i c e _ t r a n s a c t i o n s (
+32t r a n s a c t i o n _ i d INTEGER PRIMARY KEY AUTOINCREMENT ,
+33ticket_id INTEGER NOT NULL ,
+34counter_id INTEGER NOT NULL ,
+35started_at DATETIME DEFAULT CURRENT_TIMESTAMP ,
+36c o m p l e t e d _ a t DATETIME ,
+37FOREIGN KEY ( ticket_id ) REFERENCES tickets ( ticket_id ) ,
+40
+
+38FOREIGN KEY ( counter_id ) REFERENCES counters ( counter_id )
+39) ‘) ;
+Listing 4: Core table definitions (server/database.js)
+41
+
+A.5 Moving Average Wait Time Calculation (server/database.js)
+Estimated wait times are calculated from the last 20 completed service transactions for a given
+service. If no historical data exists, the system falls back to the service’s configured default
+average time.
+1g e t M o v i n g A v e r a g e ( serviceId , callback ) {
+2this . db . get (
+3‘ SELECT AVG (
+4( julianday ( c o m p l e t e d _ a t ) - julianday ( started_at ) ) * 24
+* 60
+5) as avg_time
+6FROM s e r v i c e _ t r a n s a c t i o n s st
+7JOIN tickets t ON st . ticket_id = t . ticket_id
+8WHERE t . service_id = ?
+9AND st . c o m p l e t e d _ a t IS NOT NULL
+10ORDER BY st . c o m p l e t e d _ a t DESC
+11LIMIT 20 ‘ ,
+12[ serviceId ] ,
+13( err , row ) = > {
+14if ( err || ! row || ! row . avg_time ) {
+15// Fall back to the service ’s configured default
+16this . db . get (
+17‘ SELECT d e f a u l t _ a v g _ t i m e FROM services WHERE
+service_id = ? ‘ ,
+18[ serviceId ] ,
+19( err , service ) = > callback ( err , service ?
+service . d e f a u l t _ a v g _ t i m e : 5)
+20) ;
+21} else {
+22callback ( null , Math . round ( row . avg_time ) ) ;
+23}
+24}
+25) ;
+26}
+Listing 5: Moving average service time (server/database.js)
+42
+
+A.6 User Authentication (server/database.js)
+Login credentials are verified by fetching the stored bcrypt hash and comparing it with the
+submitted password. The returned user object includes the role name and assigned counter,
+used to tailor the staff dashboard on the client side.
+1a u t h e n t i c a t e U s e r ( username , password , callback ) {
+2this . db . get (
+3‘ SELECT u .* , r . role_name , r . permissions ,
+4c . name as counter_name , c . service_id
+5FROM users u
+6JOIN roles r ON u . role_id = r . role_id
+7LEFT JOIN counters c ON u . counter_id = c . counter_id
+8WHERE u . username = ? ‘ ,
+9[ username ] ,
+10( err , user ) = > {
+11if ( err || ! user ) return callback ( err , null ) ;
+12
+13// Compare submitted password against stored hash
+14bcrypt . compare ( password , user . password_hash , ( err ,
+match ) = > {
+15if ( err || ! match ) return callback ( err , null ) ;
+16callback ( null , user ) ;
+17}) ;
+18}
+19) ;
+20}
+Listing 6: Session-based authentication with bcrypt (server/database.js)
+43

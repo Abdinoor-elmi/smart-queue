@@ -1,0 +1,21 @@
+flowchart LR
+    Customer[Customer Kiosk] -->|POST /api/tickets| Express[Express Server]
+    Staff[Staff Dashboard] -->|ticket actions| Express
+    Admin[Admin Panel] -->|configuration and control| Express
+    Manager[Manager Reports] -->|report requests| Express
+    Display[Public Display] -->|queue board data| Express
+
+    Express --> SQLite[(SQLite Database)]
+    Express <-->|broadcast updates| WebSocket[WebSocket Server]
+    WebSocket --> Customer
+    WebSocket --> Staff
+    WebSocket --> Admin
+    WebSocket --> Display
+
+    SQLite --> Roles[roles]
+    SQLite --> Users[users]
+    SQLite --> Services[services]
+    SQLite --> Counters[counters]
+    SQLite --> Tickets[tickets]
+    SQLite --> Transactions[service_transactions]
+    SQLite --> Settings[system_settings]

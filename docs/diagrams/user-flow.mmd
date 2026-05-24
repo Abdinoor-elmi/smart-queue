@@ -1,0 +1,21 @@
+sequenceDiagram
+    actor Customer
+    participant Kiosk
+    participant Server
+    participant DB as SQLite
+    participant Staff
+    participant Display
+
+    Customer->>Kiosk: Select service and request ticket
+    Kiosk->>Server: POST /api/tickets
+    Server->>DB: Create waiting ticket
+    Server-->>Kiosk: Ticket number, position, estimate
+    Server-->>Staff: WebSocket queue_update
+    Server-->>Display: WebSocket queue_update
+    Staff->>Server: PUT /api/tickets/:id/status called
+    Server->>DB: Set called_at and counter
+    Server-->>Kiosk: WebSocket ticket_update
+    Customer->>Staff: Goes to counter
+    Staff->>Server: Set serving, then completed
+    Server->>DB: Store transaction timing
+    Server-->>Kiosk: Final ticket_update

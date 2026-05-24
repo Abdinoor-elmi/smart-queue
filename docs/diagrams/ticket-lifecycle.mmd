@@ -1,0 +1,13 @@
+stateDiagram-v2
+    [*] --> waiting: Customer creates ticket
+    waiting --> called: Staff calls next ticket
+    called --> serving: Customer arrives
+    serving --> completed: Service completed
+    waiting --> cancelled: Customer cancels
+    called --> waiting: First missed call / second chance
+    called --> no_show: Timeout after allowed misses
+    serving --> no_show: Close day
+    waiting --> no_show: Close day
+    completed --> [*]
+    cancelled --> [*]
+    no_show --> [*]
