@@ -446,17 +446,16 @@ class StaffDashboard {
 
     async completeTicket(ticketId) {
         try {
-            await api.updateTicketStatus(ticketId, 'completed');
+            const counterId = this.selectedCounter ? this.selectedCounter.counter_id : null;
+            await api.updateTicketStatus(ticketId, 'completed', counterId, {
+                autoCallNext: this.autoCallEnabled
+            });
             
             this.currentTicket = null;
             this.renderCurrentTicket();
             utils.showSuccess('Ticket completed successfully.');
             
             await this.loadQueue();
-
-            if (this.autoCallEnabled && !this.isOnBreak()) {
-                await this.callNextTicket({ showEmptyError: false });
-            }
         } catch (error) {
             console.error('Failed to complete ticket:', error);
             utils.showError('Failed to complete ticket.');

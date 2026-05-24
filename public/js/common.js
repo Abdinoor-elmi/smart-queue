@@ -153,11 +153,12 @@ class SmartQueueAPI {
         return this.request(`/api/queue/${serviceId}`);
     }
 
-    async updateTicketStatus(ticketId, status, counterId = null) {
+    async updateTicketStatus(ticketId, status, counterId = null, options = {}) {
         const body = { status };
         if (counterId) {
             body.counterId = counterId;
         }
+        Object.assign(body, options);
         return this.request(`/api/tickets/${ticketId}/status`, {
             method: 'PUT',
             body

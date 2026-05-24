@@ -155,7 +155,7 @@ function handleCalledTicketTimeout(ticket, secondChanceLimit) {
     );
 }
 
-function autoCallNextTicket(serviceId, counterId, excludedTicketId) {
+function autoCallNextTicket(serviceId, counterId, excludedTicketId, callback = () => {}) {
     db.db.get(
         `SELECT ticket_id
          FROM tickets
@@ -169,14 +169,19 @@ function autoCallNextTicket(serviceId, counterId, excludedTicketId) {
         (err, nextTicket) => {
             if (err) {
                 console.error('Failed to find next ticket after missed call:', err);
+                callback(err);
                 return;
             }
 
-            if (!nextTicket) return;
+            if (!nextTicket) {
+                callback(null, null);
+                return;
+            }
 
             db.updateTicketStatus(nextTicket.ticket_id, 'called', counterId, (err) => {
                 if (err) {
                     console.error('Failed to auto-call next ticket:', err);
+                    callback(err);
                     return;
                 }
 
@@ -186,6 +191,8 @@ function autoCallNextTicket(serviceId, counterId, excludedTicketId) {
                     status: 'called',
                     autoCalled: true
                 });
+
+                callback(null, nextTicket);
             });
         }
     );
@@ -389,9 +396,26 @@ app.put('/api/tickets/:ticketId/cancel', (req, res) => {
 
 app.put('/api/tickets/:ticketId/status', requireRole('admin', 'staff'), (req, res) => {
     const { ticketId } = req.params;
-    const { status, counterId } = req.body;
-    
-    db.updateTicketStatus(ticketId, status, counterId, (err) => {
+    const { status, counterId, autoCallNext } = req.body;
+
+    db.db.get(
+        `SELECT ticket_id, service_id, counter_id FROM tickets WHERE ticket_id = ?`,
+        [ticketId],
+        (lookupErr, existingTicket) => {
+            if (lookupErr) {
+                return res.status(500).json({ error: 'Failed to load ticket' });
+            }
+
+            if (!existingTicket) {
+                return res.status(404).json({ error: 'Ticket not found' });
+            }
+
+            updateTicketStatusWithAutomation(existingTicket);
+        }
+    );
+
+    function updateTicketStatusWithAutomation(existingTicket) {
+        db.updateTicketStatus(ticketId, status, counterId, (err) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to update ticket status' });
         }
@@ -421,8 +445,33 @@ app.put('/api/tickets/:ticketId/status', requireRole('admin', 'staff'), (req, re
             status
         });
         
-        res.json({ success: true });
+        const shouldAutoCallNext = status === 'completed' && autoCallNext === true;
+        if (!shouldAutoCallNext) {
+            res.json({ success: true });
+            return;
+        }
+
+        const nextCounterId = existingTicket.counter_id || counterId;
+        if (!nextCounterId) {
+            res.json({ success: true, autoCalled: false });
+            return;
+        }
+
+        autoCallNextTicket(existingTicket.service_id, nextCounterId, ticketId, (autoCallErr, nextTicket) => {
+            if (autoCallErr) {
+                return res.status(500).json({
+                    error: 'Ticket completed, but failed to call next ticket'
+                });
+            }
+
+            res.json({
+                success: true,
+                autoCalled: Boolean(nextTicket),
+                nextTicketId: nextTicket ? nextTicket.ticket_id : null
+            });
+        });
     });
+    }
 });
 
 app.put('/api/tickets/:ticketId/transfer', requireRole('admin', 'manager'), (req, res) => {
