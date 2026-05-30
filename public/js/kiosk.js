@@ -141,9 +141,18 @@ class KioskInterface {
                 serviceId: this.selectedService.service_id,
                 serviceName: this.selectedService.name
             };
-            this.lastTicketStatus = 'waiting';
+            this.lastTicketStatus = ticketData.status || 'waiting';
             
             this.displayTicket(ticketData);
+            this.updateTicketStatus({
+                ticket_id: ticketData.ticketId,
+                ticket_number: ticketData.ticketNumber,
+                service_id: this.selectedService.service_id,
+                status: ticketData.status || 'waiting',
+                counter_id: ticketData.counterId || null,
+                counter_name: ticketData.counterName || null,
+                missed_calls: 0
+            });
             this.updateTicketLink(ticketData.ticketId);
             
             // Start monitoring ticket status
@@ -279,6 +288,9 @@ class KioskInterface {
         if (counterElement) {
             if (ticket.counter_name) {
                 counterElement.textContent = ticket.counter_name;
+            } else if (ticket.counter_id) {
+                const counter = this.counters.find(c => c.counter_id === ticket.counter_id);
+                counterElement.textContent = counter ? counter.name : 'Proceed to assigned counter';
             } else {
                 const serviceCounters = this.counters.filter(c => c.service_id === ticket.service_id && c.is_active);
                 const counterNames = serviceCounters.map(c => c.name).join(', ');
@@ -391,9 +403,14 @@ class KioskInterface {
         this.updateTicketLink(this.currentTicket.ticketId);
         
         // Show which counter(s) handle this service
-        const serviceCounters = this.counters.filter(c => c.service_id === this.selectedService.service_id && c.is_active);
-        const counterNames = serviceCounters.map(c => c.name).join(', ');
-        document.getElementById('ticket-counter').textContent = counterNames || 'See staff for assistance';
+        const counterElement = document.getElementById('ticket-counter');
+        if (ticketData.counterName) {
+            counterElement.textContent = ticketData.counterName;
+        } else {
+            const serviceCounters = this.counters.filter(c => c.service_id === this.selectedService.service_id && c.is_active);
+            const counterNames = serviceCounters.map(c => c.name).join(', ');
+            counterElement.textContent = counterNames || 'See staff for assistance';
+        }
         
         // Initial position and wait time
         this.updateQueuePosition();

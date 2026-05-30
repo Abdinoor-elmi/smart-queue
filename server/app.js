@@ -198,6 +198,66 @@ function autoCallNextTicket(serviceId, counterId, excludedTicketId, callback = (
     );
 }
 
+function assignTicketToAvailableCounter(serviceId, ticketId, callback) {
+    db.db.get(
+        `SELECT ticket_id
+         FROM tickets
+         WHERE service_id = ?
+           AND status = 'waiting'
+           AND ticket_id != ?
+         ORDER BY created_at
+         LIMIT 1`,
+        [serviceId, ticketId],
+        (err, waitingTicket) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            if (waitingTicket) {
+                callback(null, null);
+                return;
+            }
+
+            db.db.get(
+                `SELECT c.counter_id, c.name
+                 FROM counters c
+                 WHERE c.service_id = ?
+                   AND c.is_active = 1
+                   AND NOT EXISTS (
+                       SELECT 1
+                       FROM tickets t
+                       WHERE t.counter_id = c.counter_id
+                         AND t.status IN ('called', 'serving')
+                   )
+                 ORDER BY c.counter_id
+                 LIMIT 1`,
+                [serviceId],
+                (counterErr, counter) => {
+                    if (counterErr) {
+                        callback(counterErr);
+                        return;
+                    }
+
+                    if (!counter) {
+                        callback(null, null);
+                        return;
+                    }
+
+                    db.updateTicketStatus(ticketId, 'called', counter.counter_id, (updateErr) => {
+                        if (updateErr) {
+                            callback(updateErr);
+                            return;
+                        }
+
+                        callback(null, counter);
+                    });
+                }
+            );
+        }
+    );
+}
+
 // Authentication middleware
 function requireAuth(req, res, next) {
     if (req.session.user) {
@@ -316,36 +376,65 @@ app.post('/api/tickets', (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to create ticket' });
         }
-        
-        // Get estimated wait time
-        db.getMovingAverage(serviceId, (err, avgTime) => {
-            db.getQueueStatus(serviceId, (err, queue) => {
-                db.db.get(
-                    'SELECT COUNT(*) as count FROM counters WHERE service_id = ? AND is_active = 1',
-                    [serviceId],
-                    (err, row) => {
-                        const activeCounters = Math.max(row ? row.count : 0, 1);
-                        const position = queue.findIndex(ticket => ticket.ticket_id === ticketId) + 1 || queue.length;
-                        const customersAhead = Math.max(position - 1, 0);
-                        const estimatedWait = Math.ceil(customersAhead * (avgTime || 5) / activeCounters);
-                
-                        const ticketData = {
-                            ticketId,
-                            ticketNumber,
-                            position,
-                            estimatedWait
-                        };
-                
-                        // Broadcast queue update
-                        broadcast({
-                            type: 'queue_update',
-                            serviceId,
-                            queue: queue.length
-                        });
-                
-                        res.json(ticketData);
+
+        assignTicketToAvailableCounter(serviceId, ticketId, (assignErr, assignedCounter) => {
+            if (assignErr) {
+                return res.status(500).json({ error: 'Failed to assign ticket to counter' });
+            }
+
+            // Get estimated wait time
+            db.getMovingAverage(serviceId, (err, avgTime) => {
+                db.getQueueStatus(serviceId, (err, queue) => {
+                    if (err) {
+                        return res.status(500).json({ error: 'Failed to get queue status' });
                     }
-                );
+
+                    db.db.get(
+                        'SELECT COUNT(*) as count FROM counters WHERE service_id = ? AND is_active = 1',
+                        [serviceId],
+                        (err, row) => {
+                            if (err) {
+                                return res.status(500).json({ error: 'Failed to get counters' });
+                            }
+
+                            const activeCounters = Math.max(row ? row.count : 0, 1);
+                            const position = assignedCounter
+                                ? 1
+                                : queue.findIndex(ticket => ticket.ticket_id === ticketId) + 1 || queue.length;
+                            const customersAhead = assignedCounter ? 0 : Math.max(position - 1, 0);
+                            const estimatedWait = Math.ceil(customersAhead * (avgTime || 5) / activeCounters);
+
+                            const ticketData = {
+                                ticketId,
+                                ticketNumber,
+                                position,
+                                estimatedWait,
+                                status: assignedCounter ? 'called' : 'waiting',
+                                counterId: assignedCounter ? assignedCounter.counter_id : null,
+                                counterName: assignedCounter ? assignedCounter.name : null
+                            };
+
+                            if (assignedCounter) {
+                                broadcast({
+                                    type: 'ticket_update',
+                                    ticketId,
+                                    status: 'called',
+                                    counterId: assignedCounter.counter_id,
+                                    autoCalled: true
+                                });
+                            }
+
+                            // Broadcast queue update
+                            broadcast({
+                                type: 'queue_update',
+                                serviceId,
+                                queue: queue.length
+                            });
+
+                            res.json(ticketData);
+                        }
+                    );
+                });
             });
         });
     });
