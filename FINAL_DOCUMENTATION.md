@@ -23,7 +23,7 @@ SmartQueue is a digital queue management system for issuing customer tickets, ca
 - Allow staff to call, serve, complete, cancel, or mark tickets as no-show.
 - Provide a public display screen for waiting customers.
 - Give administrators tools for services, counters, users, settings, transfer, and close-day operations.
-- Give managers focused reports with CSV export and print/PDF support.
+- Give managers focused reports with CSV export and browser print/save-as-PDF support.
 - Keep all queue screens synchronized in real time.
 
 ## Snapshots
@@ -46,7 +46,7 @@ flowchart LR
     Customer[Customer Kiosk] -->|POST /api/tickets| Express[Express Server]
     Staff[Staff Dashboard] -->|ticket actions| Express
     Admin[Admin Panel] -->|configuration and control| Express
-    Manager[Manager Reports] -->|report requests| Express
+    Manager[Manager Reports] -->|fetch report data| Express
     Display[Public Display] -->|queue board data| Express
 
     Express --> SQLite[(SQLite Database)]
@@ -123,7 +123,7 @@ Diagram source: [docs/diagrams/user-flow.mmd](docs/diagrams/user-flow.mmd)
 | Staff Dashboard | `/staff` | Staff log in, view the assigned service queue, call customers, start serving, complete tickets, mark no-shows, and view history. |
 | Staff History | `/staff/history` | Staff can review recently handled completed, no-show, and cancelled tickets. |
 | Admin Panel | `/admin` | Admins manage services, counters, users, queue records, analytics, settings, ticket transfer, and close-day operations. |
-| Manager Reports | `/manager` | Managers generate summary, active queue, service, counter, peak-hour, no-show, and ticket detail reports. |
+| Manager Reports | `/manager` | Managers generate summary, active queue, service, counter, peak-hour, no-show, and ticket detail reports from current ticket, service, and counter data. |
 | Public Display | `/display` | Waiting-area screen showing active queues by counter and live ticket status. |
 
 ## Core Features
@@ -139,7 +139,7 @@ Diagram source: [docs/diagrams/user-flow.mmd](docs/diagrams/user-flow.mmd)
 - Customer ticket sharing through ticket link and QR code.
 - Close-day operation that marks active tickets as no-show.
 - Admin ticket transfer between services/counters.
-- Manager report generation with CSV export and print/PDF option.
+- Manager report generation with CSV export and browser print/save-as-PDF option.
 - Session-based role access control.
 
 ## Installation
@@ -180,7 +180,7 @@ Default local URLs:
 | Manager | `manager` | `manager123` |
 | Staff example | `counter1` | `password` |
 
-The current database also contains staff users assigned to Counter 1, Counter 2, and Counter 3. Admin users can add or edit staff accounts from the Admin Panel.
+The application automatically creates the default admin and manager accounts when the database is initialized. Staff accounts such as `counter1` are available only if they already exist in the provided `database/smartqueue.db`, or after an admin creates them from the Admin Panel and assigns them to counters.
 
 ## Database Design
 
@@ -226,6 +226,7 @@ Important relationships:
 | `PUT` | `/api/tickets/:ticketId/cancel` | Public | Cancel active customer ticket. |
 | `PUT` | `/api/tickets/:ticketId/transfer` | Admin, Manager | Transfer active ticket. |
 | `POST` | `/api/admin/close-day` | Admin | Close active tickets as no-show. |
+| `GET` | `/api/roles` | Admin | List available user roles for user management. |
 | `GET` | `/api/users` | Admin | List users. |
 | `POST` | `/api/users` | Admin | Create user. |
 | `PUT` | `/api/users/:id` | Admin | Update user. |
@@ -245,6 +246,12 @@ smart-queue/
 |   `-- snapshots/
 |-- public/
 |   |-- css/
+|   |   |-- admin.css
+|   |   |-- display.css
+|   |   |-- kiosk.css
+|   |   |-- main.css
+|   |   |-- manager.css
+|   |   `-- staff.css
 |   |-- js/
 |   |-- admin.html
 |   |-- display.html
